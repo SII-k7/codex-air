@@ -59,7 +59,11 @@ if [[ $# -eq 0 ]]; then
   done < <(git -C "$workspace" diff --name-only --no-renames -z HEAD --)
   while IFS= read -r -d '' path; do
     duplicate=0
-    for existing in "${paths[@]}"; do
+    # Bash 3.2 (the macOS system Bash) treats an empty-array expansion as an
+    # unbound variable under `set -u`. The `-` form keeps discovery portable;
+    # the empty sentinel is ignored.
+    for existing in "${paths[@]-}"; do
+      [[ -n "$existing" ]] || continue
       if [[ "$existing" == "$path" ]]; then
         duplicate=1
         break
@@ -78,7 +82,8 @@ for path in "${paths[@]}"; do
   case "/$path/" in
     */../*|*/./*) die "non-canonical relative path: $path" ;;
   esac
-  for existing in "${validated_paths[@]}"; do
+  for existing in "${validated_paths[@]-}"; do
+    [[ -n "$existing" ]] || continue
     [[ "$existing" != "$path" ]] || die "duplicate path: $path"
   done
   validated_paths+=("$path")
