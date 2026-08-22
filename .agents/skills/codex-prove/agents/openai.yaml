@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex PROVE (compatibility)"
+  short_description: "Temporary alias that redirects to Codex AIR."
+  default_prompt: "使用旧命令 $codex-prove，并按新的 $codex-air 协议完成这项任务。"
+policy:
+  allow_implicit_invocation: false

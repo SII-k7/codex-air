@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex AIR"
+  short_description: "Luna-primary execution with risk-triggered review."
+  default_prompt: "使用 $codex-air，让 Luna Primary 端到端完成、验证并审核这项任务。"
+policy:
+  allow_implicit_invocation: false

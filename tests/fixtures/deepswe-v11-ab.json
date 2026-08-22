@@ -1,0 +1,53 @@
+{
+  "benchmark": "Codex AIR DeepSWE v1.1 full A/B",
+  "frozen_at": "2026-08-22T17:15:18+08:00",
+  "status": "FROZEN_NOT_RUN",
+  "source": {
+    "repository": "https://github.com/datacurve-ai/deep-swe",
+    "git_sha": "435ee89ec2f2e2289f33b0da4f992f0b7b7266b9",
+    "benchmark_version": "v1.1",
+    "task_count": 113,
+    "repository_count": 91,
+    "languages": [
+      "TypeScript",
+      "Go",
+      "Python",
+      "JavaScript",
+      "Rust"
+    ],
+    "runner": "datacurve-pier > 0.3.0 with a separate verifier environment"
+  },
+  "frontier_difficulty_evidence": {
+    "source": "https://openai.com/index/gpt-5-6/",
+    "gpt_5_6_sol_max_percent": 72.7,
+    "claude_fable_5_max_percent": 69.7,
+    "claim": "Published full-benchmark scores are materially below 100%; this does not guarantee that future models cannot improve."
+  },
+  "scope": {
+    "primary": "All 113 pinned v1.1 tasks",
+    "attempts_per_arm_task": 1,
+    "pilot_only": "The official deterministic --n-tasks 10 --sample-seed 0 subset may validate infrastructure but cannot replace the primary comparison.",
+    "task_order": "Lexicographic task ID",
+    "arm_order": "Counterbalance per task from SHA256('codex-air-deepswe-v11:' + task_id)."
+  },
+  "arms": {
+    "direct": "gpt-5.6-sol / max / default with the official agent-visible task prompt and no AIR invocation",
+    "air": "same root model, max effort, default tier, task prompt, timeout, environment, and tool boundary, explicitly invoking $codex-air; Luna children remain max / fast",
+    "run_cap": "Use the task's pinned resource limits; record any harness-level cap identically for both arms"
+  },
+  "scoring": {
+    "primary_quality": "100 * official passed tasks / 113",
+    "secondary_quality": "Mean verifier pass fraction from reward.json across all 113 tasks",
+    "invalid_task": "Collection failure, empty verifier output, timeout, invalid candidate, or isolation violation scores 0 unless a shared pre-inference infrastructure failure invalidates both paired cells.",
+    "quality_gate": "AIR resolved rate must be greater than or equal to Direct resolved rate before latency or cost can be called a win.",
+    "latency": "Report total wall time, median paired task ratio, and 95th-percentile task wall time; for AIR also report controller, batch, slowest-leaf, persistence, and aggregate-review spans.",
+    "usage": "Input, cached-input, output, and reasoning tokens by model, role, task, and actual service tier when exposed.",
+    "cost": "Reprice every token type at its recorded model and actual tier; never multiply aggregate tokens by a blended price.",
+    "air_target": "Quality gate passes, wall time is not worse, and API-equivalent AIR / Direct cost is at or below 0.55."
+  },
+  "isolation": {
+    "forbidden": "Agent access to tests/, solution/, benchmark source outside the prepared task, prior trajectories, leaderboard task outcomes, sibling workspaces, or the other arm.",
+    "grading": "Collect the candidate patch after inference and apply it in Pier's pristine separate verifier container.",
+    "artifacts": "Retain exact task IDs, source SHA, runtime versions, launch identities, actual tiers, task-level rewards, patches, verifier outputs, wall times, and token telemetry."
+  }
+}

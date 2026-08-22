@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18">
+  <title>Codex AIR model-neutral orchestration and evidence loop</title>
+  <desc>Lean Primary lets Luna own ordinary reversible work and evidence review in one context while the Host asks Git to persist the visible candidate; coordination or critical risk enters Full AIR.</desc>
+
+  <rect width="1200" height="420" fill="#0B1020"/>
+  <rect x="28" y="28" width="1144" height="364" rx="24" fill="#111A30" stroke="#9AA6B8" stroke-opacity="0.35" stroke-width="2"/>
+  <path d="M48 118H622M48 330H622" fill="none" stroke="#9AA6B8" stroke-opacity="0.35" stroke-width="2"/>
+  <path d="M650 58H1148M650 366H1148" fill="none" stroke="#9AA6B8" stroke-opacity="0.22" stroke-width="2"/>
+
+  <text x="64" y="78" fill="#F7F3E8" font-size="36" font-weight="800" letter-spacing="2">CODEX AIR</text>
+  <text x="64" y="106" fill="#65D6C4" font-size="24" font-weight="600">Planning · Routing · Ownership · Verification · Evidence</text>
+  <text x="64" y="174" fill="#FF6B3D" font-size="30" font-weight="800">Ordinary cost target ≤55% of Direct</text>
+  <text x="64" y="205" fill="#9AA6B8" font-size="18">Official ratios · routing and orchestration overhead</text>
+
+  <text x="64" y="268" fill="#F7F3E8" font-size="22" font-weight="700">PLAN → ROUTE → VERIFY</text>
+  <circle cx="74" cy="304" r="5" fill="#FF6B3D"/>
+  <path d="M90 304H210M226 304H346M362 304H482" fill="none" stroke="#FF6B3D" stroke-width="3"/>
+  <circle cx="500" cy="304" r="5" fill="#8FA7FF"/>
+  <text x="64" y="358" fill="#F7F3E8" font-size="21" font-weight="700">FILES · DIFF · TEST</text>
+  <text x="64" y="382" fill="#9AA6B8" font-size="20">Luna Primary reviews Lean; the selected controller reviews Full</text>
+
+  <text x="680" y="88" fill="#9AA6B8" font-size="18" letter-spacing="2">LEAN PRIMARY DEFAULT · FULL CONTROLLER BY EXCEPTION</text>
+  <path d="M700 166H1114M700 166V316M1114 166V316" fill="none" stroke="#9AA6B8" stroke-opacity="0.2" stroke-width="2"/>
+
+  <g fill="none" stroke="#FF6B3D" stroke-width="4" stroke-linecap="round">
+    <path id="task-path-1" data-flow="task" data-from="air-controller" data-to="efficient-worker-1" d="M820 204C770 226 748 247 748 270"/>
+    <path id="task-path-2" data-flow="task" data-from="air-controller" data-to="efficient-worker-2" d="M852 220C860 239 884 248 884 270"/>
+    <path id="task-path-3" data-flow="task" data-from="air-controller" data-to="efficient-worker-3" d="M884 204C940 226 1020 247 1020 270"/>
+  </g>
+  <g fill="none" stroke="#8FA7FF" stroke-width="4" stroke-dasharray="6 10" stroke-linecap="round">
+    <path id="evidence-path-1" data-flow="evidence" data-from="efficient-worker-1" data-to="air-controller" d="M748 270C748 238 786 215 820 192"/>
+    <path id="evidence-path-2" data-flow="evidence" data-from="efficient-worker-2" data-to="air-controller" d="M884 270C884 240 870 220 852 198"/>
+    <path id="evidence-path-3" data-flow="evidence" data-from="efficient-worker-3" data-to="air-controller" d="M1020 270C1020 238 946 215 884 192"/>
+  </g>
+  <g fill="#FF6B3D">
+    <path d="M744 270L748 282L752 270Z"/>
+    <path d="M880 270L884 282L888 270Z"/>
+    <path d="M1016 270L1020 282L1024 270Z"/>
+  </g>
+  <g fill="#8FA7FF">
+    <path d="M816 194L820 182L824 194Z"/>
+    <path d="M848 200L852 188L856 200Z"/>
+    <path d="M880 194L884 182L888 194Z"/>
+  </g>
+
+  <g id="air-controller">
+    <rect x="800" y="114" width="104" height="104" rx="18" fill="#FF6B3D" fill-opacity="0.16" stroke="#FF6B3D" stroke-width="2"/>
+    <rect x="810" y="124" width="84" height="84" rx="14" fill="#FF6B3D" stroke="#F7F3E8" stroke-width="3"/>
+    <rect x="820" y="140" width="64" height="52" rx="8" fill="#0B1020" stroke="#F7F3E8" stroke-width="2"/>
+    <circle cx="832" cy="150" r="3" fill="#65D6C4"/>
+    <path d="M842 150H872M832 182H872" stroke="#F7F3E8" stroke-width="3" stroke-linecap="round"/>
+    <text x="852" y="174" text-anchor="middle" fill="#F7F3E8" font-size="18" font-weight="800">AIR</text>
+  </g>
+  <text x="852" y="110" text-anchor="middle" fill="#F7F3E8" font-size="18" font-weight="700">Full only · Luna Max Fast controller</text>
+
+  <g fill="none" stroke="#9AA6B8" stroke-width="3" stroke-linecap="round">
+    <path id="complex-task-orbit" data-tier="complex" d="M904 152H1048"/>
+    <path id="complex-evidence-orbit" data-tier="complex" d="M1048 194H904" stroke-dasharray="5 9"/>
+  </g>
+  <g id="complex-worker">
+    <rect x="1048" y="126" width="64" height="64" rx="12" fill="#9AA6B8" fill-opacity="0.16" stroke="#9AA6B8" stroke-width="2"/>
+    <rect x="1056" y="134" width="48" height="48" rx="8" fill="#9AA6B8" stroke="#F7F3E8" stroke-width="2"/>
+    <circle cx="1066" cy="145" r="3" fill="#0B1020"/>
+    <path d="M1074 145H1094M1066 157H1094M1066 169H1086" stroke="#0B1020" stroke-width="3" stroke-linecap="round"/>
+    <text x="1080" y="214" text-anchor="middle" fill="#9AA6B8" font-size="18" font-weight="700">COMPLEX</text>
+    <text x="1080" y="238" text-anchor="middle" fill="#F7F3E8" font-size="18">bounded complex execution</text>
+  </g>
+
+  <g id="efficient-worker-1">
+    <rect x="716" y="270" width="64" height="64" rx="12" fill="#65D6C4" fill-opacity="0.16" stroke="#65D6C4" stroke-width="2"/>
+    <rect x="724" y="278" width="48" height="48" rx="8" fill="#65D6C4" stroke="#F7F3E8" stroke-width="2"/>
+    <circle cx="734" cy="289" r="3" fill="#0B1020"/>
+    <path d="M742 289H762M734 301H762M734 313H754" stroke="#0B1020" stroke-width="3" stroke-linecap="round"/>
+    <text x="748" y="350" text-anchor="middle" fill="#65D6C4" font-size="18" font-weight="700">EFFICIENT 1</text>
+  </g>
+  <g id="efficient-worker-2">
+    <rect x="852" y="270" width="64" height="64" rx="12" fill="#65D6C4" fill-opacity="0.16" stroke="#65D6C4" stroke-width="2"/>
+    <rect x="860" y="278" width="48" height="48" rx="8" fill="#65D6C4" stroke="#F7F3E8" stroke-width="2"/>
+    <circle cx="870" cy="289" r="3" fill="#0B1020"/>
+    <path d="M878 289H898M870 301H898M870 313H890" stroke="#0B1020" stroke-width="3" stroke-linecap="round"/>
+    <text x="884" y="350" text-anchor="middle" fill="#65D6C4" font-size="18" font-weight="700">EFFICIENT 2</text>
+  </g>
+  <g id="efficient-worker-3">
+    <rect x="988" y="270" width="64" height="64" rx="12" fill="#65D6C4" fill-opacity="0.16" stroke="#65D6C4" stroke-width="2"/>
+    <rect x="996" y="278" width="48" height="48" rx="8" fill="#65D6C4" stroke="#F7F3E8" stroke-width="2"/>
+    <circle cx="1006" cy="289" r="3" fill="#0B1020"/>
+    <path d="M1014 289H1034M1006 301H1034M1006 313H1026" stroke="#0B1020" stroke-width="3" stroke-linecap="round"/>
+    <text x="1020" y="350" text-anchor="middle" fill="#65D6C4" font-size="18" font-weight="700">EFFICIENT 3</text>
+  </g>
+</svg>
