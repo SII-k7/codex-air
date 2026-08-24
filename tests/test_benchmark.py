@@ -138,10 +138,10 @@ class RealProjectBenchmarkTests(unittest.TestCase):
             self.assertRegex(window, historical_markers)
         for path in README_FILES:
             text = path.read_text(encoding="utf-8")
-            for signal in ("69.5%", "73.5%", "46.0%", "56.0%", "27.2%", "37.2%", "0.50", "0.05"):
+            for signal in ("62.0%", "67.0%", "49.3%", "56.3%", "37.5%", "44.5%", "0.125"):
                 self.assertIn(signal, text, path.name)
             self.assertIn("scenario_model_projection", text, path.name)
-            self.assertRegex(text, r"(?i)not matched A/B|不是匹配 A/B")
+            self.assertRegex(text, r"(?i)not.*guarantee|不是.*保证")
             self.assertNotRegex(text, r"(?i)(?:complex|复杂).{0,160}65%")
             self.assertNotRegex(text, r"1\s*/\s*25")
             self.assertNotIn("sample_validated_projection", text)

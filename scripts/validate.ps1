@@ -137,11 +137,11 @@ $combined = $skillText + "`n" + $contractText + "`n" + $runtimeText
 foreach ($marker in @(
     "Planning", "Routing", "Ownership", "Verification", "Evidence",
     "Requirement ID", "one owner", "Native Nested", "Compatibility",
-    "single-semantic-context invariant", "Mode: Lean Primary", "Host does not reread file contents",
+    "Sol xhigh", "Luna Max Fast", "Terra is forbidden", "Mode: Single Executor",
     "deterministic candidate persistence", "persist-visible-candidate.sh", "VISIBLE_CANDIDATE", "Final file SHA256",
     "timeout_ms=3600000", "PYTHONDONTWRITEBYTECODE=1", "evaluation isolation",
     'fork_turns="none"', "Fail Closed", "PASS | FIX | BLOCKED",
-    "Verdict: PASS | REVIEW_REQUIRED | BLOCKED", "zero Sol child calls",
+    "Status: PASS | REPLAN_NEEDED | BLOCKED", "one Sol semantic controller", "Direct", "Controlled AIR",
     "air-controller", "air-critical-controller", "air-complex-worker", "air-efficient-worker", "air-challenger"
 )) {
     Assert-Condition ($combined.IndexOf($marker, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) "orchestration contract is missing: $marker"
@@ -165,12 +165,17 @@ Assert-Regex $compatText '\$codex-air' "compatibility openai.yaml misses canonic
 Assert-Regex $compatText '(?m)^\s{2}allow_implicit_invocation:\s*false\s*$' "compatibility openai.yaml permits implicit invocation"
 
 $agentExpectations = @(
-    @(".codex/agents/air-controller.toml", "air-controller", "gpt-5.6-luna", "max", "read-only", $false),
-    @(".codex/agents/air-critical-controller.toml", "air-critical-controller", "gpt-5.6-sol", "max", "read-only", $false),
-    @(".codex/agents/air-complex-worker.toml", "air-complex-worker", "gpt-5.6-terra", "max", "workspace-write", $true),
+    @(".codex/agents/air-controller.toml", "air-controller", "gpt-5.6-sol", "xhigh", "read-only", $false),
+    @(".codex/agents/air-critical-controller.toml", "air-critical-controller", "gpt-5.6-sol", "xhigh", "read-only", $false),
+    @(".codex/agents/air-complex-worker.toml", "air-complex-worker", "gpt-5.6-luna", "max", "workspace-write", $true),
     @(".codex/agents/air-efficient-worker.toml", "air-efficient-worker", "gpt-5.6-luna", "max", "workspace-write", $true),
-    @(".codex/agents/air-challenger.toml", "air-challenger", "gpt-5.6-sol", "max", "read-only", $true)
+    @(".codex/agents/air-challenger.toml", "air-challenger", "gpt-5.6-sol", "xhigh", "read-only", $true)
 )
+$agentFiles = @(Get-ChildItem -LiteralPath (Join-Path $repoRoot ".codex/agents") -File -Filter "*.toml")
+Assert-Condition ($agentFiles.Count -eq $agentExpectations.Count) "agent directory contains an unexpected profile"
+foreach ($agentFile in $agentFiles) {
+    Assert-Condition (-not (Get-Text $agentFile.FullName).Contains('model = "gpt-5.6-terra"')) "Terra is forbidden in AIR agent profiles"
+}
 foreach ($expectation in $agentExpectations) {
     $text = Get-Text (Join-Path $repoRoot $expectation[0])
     Assert-Regex $text ('(?m)^name\s*=\s*"' + [regex]::Escape($expectation[1]) + '"\s*$') "agent name is invalid"
@@ -183,12 +188,12 @@ foreach ($expectation in $agentExpectations) {
     if ($expectation[5]) { Assert-Regex $text '(?is)(?:do not|never) .*?(spawn|create).*?subagent' "execution agent can create subagents" }
 }
 $efficientText = Get-Text (Join-Path $repoRoot ".codex/agents/air-efficient-worker.toml")
-$controllerText = Get-Text (Join-Path $repoRoot ".codex/agents/air-controller.toml")
-foreach ($entry in @(@($efficientText, "efficient"), @($controllerText, "controller"))) {
+$complexText = Get-Text (Join-Path $repoRoot ".codex/agents/air-complex-worker.toml")
+foreach ($entry in @(@($efficientText, "efficient"), @($complexText, "complex"))) {
     Assert-Regex $entry[0] '(?m)^service_tier\s*=\s*"fast"\s*$' "$($entry[1]) agent fast service tier is missing"
     Assert-Regex $entry[0] '(?ms)^\[features\]\s*.*?^fast_mode\s*=\s*true\s*$' "$($entry[1]) agent fast feature is missing"
 }
-foreach ($entry in @(@($efficientText, "efficient"), @($controllerText, "controller"))) {
+foreach ($entry in @(@($efficientText, "efficient"), @($complexText, "complex"))) {
     foreach ($pattern in @(
         '(?m)^model_verbosity\s*=\s*"low"\s*$',
         '(?m)^model_reasoning_summary\s*=\s*"none"\s*$',
@@ -199,13 +204,14 @@ foreach ($entry in @(@($efficientText, "efficient"), @($controllerText, "control
     }
 }
 Assert-Regex $efficientText '(?ms)^\[agents\]\s*.*?^enabled\s*=\s*false\s*$' "efficient agent nesting guard is missing"
+Assert-Regex $complexText '(?ms)^\[agents\]\s*.*?^enabled\s*=\s*false\s*$' "complex agent nesting guard is missing"
 foreach ($relative in @(
+    ".codex/agents/air-controller.toml",
     ".codex/agents/air-critical-controller.toml",
-    ".codex/agents/air-complex-worker.toml",
     ".codex/agents/air-challenger.toml"
 )) {
     $text = Get-Text (Join-Path $repoRoot $relative)
-    Assert-Regex $text '(?m)^service_tier\s*=\s*"default"\s*$' "non-Luna agent must pin the Standard service tier"
+    Assert-Regex $text '(?m)^service_tier\s*=\s*"default"\s*$' "Sol agent must pin the Standard service tier"
 }
 
 foreach ($script in @(

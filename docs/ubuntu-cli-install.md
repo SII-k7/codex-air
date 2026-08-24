@@ -42,13 +42,13 @@ bash scripts/default.sh status
 
 `--check` 是只读预检。正式安装会先创建带校验和的备份，再以事务方式安装：
 
-- `air-controller`：Sol `xhigh` + Standard，普通任务规划与同一主控终审；
-- `air-critical-controller`：Sol `max` + Standard，关键风险任务的规划与终审；
+- `air-controller`：Sol `xhigh` + Standard，任务理解、探索、拆解、方案与同一主控终审；
+- `air-critical-controller`：Sol `xhigh` + Standard，关键风险任务的授权、规划与终审；
 - `air-efficient-worker`：Luna `max` + Fast，默认承担有界诊断、代码修改、测试、重构、文档与普通单组件多文件推进；Fast 固定在该 agent 自己的配置层，不跟随主会话的 `/fast` 状态；
-- `air-complex-worker`：Terra `max` + Standard，只处理带明确升级原因的架构/公共接口、迁移/并发、不可压缩上下文或高后果实现；
-- `air-challenger`：Sol `max` + Standard，最多一次只读对抗式检查，无批准权。
+- `air-complex-worker`：Luna `max` + Fast，只处理带明确触发器的公共接口、大局部上下文、迁移/并发或高后果实现；它与 efficient 使用同一模型，只增加执行约束；
+- `air-challenger`：Sol `xhigh` + Standard，极少数只读对抗式检查，无批准权。
 
-安装器支持从本项目旧的 state v5 配置升级到 v6，并可恢复升级前状态。
+安装器使用 state v7，并支持从本项目旧的 state v5/v6 配置升级和恢复升级前状态。
 
 Codex AIR 只允许显式触发。若旧版本曾启用“所有请求自动进入 AIR”，执行：
 
@@ -61,10 +61,9 @@ bash scripts/doctor.sh --require-codex
 清理脚本只删除旧版本写入 `~/.codex/AGENTS.md` 的受管区块，保留其他全局
 指令并先备份。`default.sh enable` 已被拒绝，避免再次把框架设为隐式默认。
 
-Luna worker 文件固定 `service_tier = "fast"`、`features.fast_mode = true` 和
-`model_reasoning_effort = "max"`。其余四个角色固定 `service_tier = "default"`，
-防止运行时把主会话已关闭的 Fast 状态错误带入新的 Sol/Terra 子线程。这样
-Controller、Complex worker 和 Challenger 始终 Standard，Luna 始终 Max + Fast。
+两个 Luna executor 文件固定 `service_tier = "fast"`、`features.fast_mode = true`
+和 `model_reasoning_effort = "max"`。三个 Sol 角色固定 `xhigh` 与
+`service_tier = "default"`。AIR 当前没有 Terra 角色。
 
 五个子代理还会显式使用：
 
@@ -107,11 +106,10 @@ $codex-air
 限制：不修改支付接口，不执行生产操作。
 ```
 
-Skill 默认选择 Lean Primary：Host 只把原始请求、显式约束、workspace 与授权
-边界交给 Luna Max Fast；Luna 在单一上下文内完成要求、实现、验证和最终证据
-审核。只有多 owner 协调或高后果风险才增加 Controller。Host 会在启动前从
-权威工具映射与 launch record 证明 agent、模型、推理档位与边界，然后在首回合
-发送紧凑 transport packet；普通 Lean 不做 Host 二次产物审核。
+Skill 优先复用已由权威 metadata 证明为 Sol `xhigh` 的主会话作为唯一
+Controller；无法证明时才启动 `air-controller`。Sol 负责要求、仓库探索、方案、
+精确 scope 与终审，Luna Max Fast 只接收 `fork_turns="none"` 的紧凑 task packet，
+负责实现、验证和有界修正。Host 会在启动前证明 agent、模型、推理档位与边界；
 TOML 文件存在本身不等于运行时模型已经生效。
 
 ## 4. 配置诊断

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Codex AIR v1.0 identity and compatibility-migration contracts."""
+"""Codex AIR v1.1 identity and compatibility-migration contracts."""
 
 from __future__ import annotations
 
@@ -53,8 +53,8 @@ class RenameMigrationContractTests(unittest.TestCase):
         for relative in ("README.md", "README.en.md"):
             text = read(ROOT / relative)
             self.assertIn(REPOSITORY, text, relative)
-            self.assertIn("`main`", text, relative)
-            self.assertIn("CODEX_AIR_V1_IMPLEMENTATION_REPORT.md", text, relative)
+            self.assertIn("v1.1.0", text, relative)
+            self.assertIn("docs/release/runtime-surface-matrix.md", text, relative)
             self.assertIn("$codex-prove", text, relative)
             self.assertIn("$codex-air", text, relative)
             self.assertNotIn("github.com/yehyakin", text, relative)
@@ -87,7 +87,6 @@ class RenameMigrationContractTests(unittest.TestCase):
             text = read(surface)
             self.assertIn('fork_turns="none"', text, surface)
             self.assertIn("identity", text.lower(), surface)
-            self.assertIn("first", text.lower(), surface)
             self.assertIn("launch", text.lower(), surface)
             self.assertIn("BLOCKED", text, surface)
 

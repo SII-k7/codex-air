@@ -44,11 +44,11 @@ home = Path(sys.argv[1])
 skill = home / ".agents/skills/codex-air/SKILL.md"
 alias = home / ".agents/skills/codex-prove/SKILL.md"
 expected = {
-    "air-controller.toml": ("air-controller", "gpt-5.6-luna", "max", 272000, 244800, "fast", "read-only"),
-    "air-critical-controller.toml": ("air-critical-controller", "gpt-5.6-sol", "max", 272000, 244800, "default", "read-only"),
-    "air-complex-worker.toml": ("air-complex-worker", "gpt-5.6-terra", "max", 272000, 244800, "default", "workspace-write"),
+    "air-controller.toml": ("air-controller", "gpt-5.6-sol", "xhigh", 272000, 244800, "default", "read-only"),
+    "air-critical-controller.toml": ("air-critical-controller", "gpt-5.6-sol", "xhigh", 272000, 244800, "default", "read-only"),
+    "air-complex-worker.toml": ("air-complex-worker", "gpt-5.6-luna", "max", 272000, 244800, "fast", "workspace-write"),
     "air-efficient-worker.toml": ("air-efficient-worker", "gpt-5.6-luna", "max", 272000, 244800, "fast", "workspace-write"),
-    "air-challenger.toml": ("air-challenger", "gpt-5.6-sol", "max", 272000, 244800, "default", "read-only"),
+    "air-challenger.toml": ("air-challenger", "gpt-5.6-sol", "xhigh", 272000, 244800, "default", "read-only"),
 }
 
 for path in (skill, alias):

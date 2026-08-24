@@ -1,6 +1,29 @@
 # TODO
 
-## Deferred DeepSWE v1.1 hardest-10 A/B
+## v1.1 Sol-control / Luna-execution matched rerun
+
+Status: **deferred until quota is available**.
+
+Rerun the same frozen hardest-10 tasks and containers, comparing Direct
+Sol/xhigh/Standard with v1.1 AIR:
+
+- the current proved Sol/xhigh Host, or one fallback Sol/xhigh controller,
+  performs understanding, repository exploration, decomposition, solution
+  selection, exact task packets, and final artifact review;
+- Luna/max/Fast performs bounded implementation, verification, and at most one
+  focused correction;
+- Terra calls and tokens must remain zero;
+- record Sol versus Luna input/cached/output tokens, requested and actual tier,
+  wall time, correction count, strict resolved, and partial score;
+- compare raw token ratio as well as tier-priced credits/API-equivalent cost.
+
+Use the same 1,800-credit absolute cap unless a new estimate based on current
+rates is approved. The v1.1 success targets are quality non-inferior on both
+strict resolved and mean partial, median paired wall ratio `0.85–1.15`, priced
+cost at most `55%` of Direct, at least 70% of model tokens on Luna, and total
+raw model tokens no more than `1.10×` Direct for the first rerun.
+
+## Completed v1.0 DeepSWE v1.1 hardest-10 A/B
 
 Status: **completed on 2026-08-23**. The paired 20-cell run finished normally.
 See `tests/deepswe-v11-hardest10-results.md` for the frozen, repository-safe

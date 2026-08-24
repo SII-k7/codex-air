@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18">
-  <title>Codex AIR model-neutral orchestration and evidence loop</title>
-  <desc>Lean Primary lets Luna own ordinary reversible work and evidence review in one context while the Host asks Git to persist the visible candidate; coordination or critical risk enters Full AIR.</desc>
+  <title>Codex AIR Sol-control and Luna-execution evidence loop</title>
+  <desc>Sol xhigh owns understanding, exploration, decomposition, and final review; Luna Max Fast owns long-running execution and verification.</desc>
 
   <rect width="1200" height="420" fill="#0B1020"/>
   <rect x="28" y="28" width="1144" height="364" rx="24" fill="#111A30" stroke="#9AA6B8" stroke-opacity="0.35" stroke-width="2"/>
@@ -18,9 +18,9 @@
   <path d="M90 304H210M226 304H346M362 304H482" fill="none" stroke="#FF6B3D" stroke-width="3"/>
   <circle cx="500" cy="304" r="5" fill="#8FA7FF"/>
   <text x="64" y="358" fill="#F7F3E8" font-size="21" font-weight="700">FILES · DIFF · TEST</text>
-  <text x="64" y="382" fill="#9AA6B8" font-size="20">Luna Primary reviews Lean; the selected controller reviews Full</text>
+  <text x="64" y="382" fill="#9AA6B8" font-size="20">Sol xhigh controls and reviews · Luna Max Fast executes</text>
 
-  <text x="680" y="88" fill="#9AA6B8" font-size="18" letter-spacing="2">LEAN PRIMARY DEFAULT · FULL CONTROLLER BY EXCEPTION</text>
+  <text x="680" y="88" fill="#9AA6B8" font-size="18" letter-spacing="2">SOL CONTROL · LUNA EXECUTION · TERRA = 0</text>
   <path d="M700 166H1114M700 166V316M1114 166V316" fill="none" stroke="#9AA6B8" stroke-opacity="0.2" stroke-width="2"/>
 
   <g fill="none" stroke="#FF6B3D" stroke-width="4" stroke-linecap="round">
@@ -52,7 +52,7 @@
     <path d="M842 150H872M832 182H872" stroke="#F7F3E8" stroke-width="3" stroke-linecap="round"/>
     <text x="852" y="174" text-anchor="middle" fill="#F7F3E8" font-size="18" font-weight="800">AIR</text>
   </g>
-  <text x="852" y="110" text-anchor="middle" fill="#F7F3E8" font-size="18" font-weight="700">Full only · Luna Max Fast controller</text>
+  <text x="852" y="110" text-anchor="middle" fill="#F7F3E8" font-size="18" font-weight="700">Sol xhigh semantic controller</text>
 
   <g fill="none" stroke="#9AA6B8" stroke-width="3" stroke-linecap="round">
     <path id="complex-task-orbit" data-tier="complex" d="M904 152H1048"/>

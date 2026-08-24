@@ -177,14 +177,14 @@ runtime_text = text(canonical / "references/runtime-notes.md")
 combined = "\n".join((skill_text, contract_text, runtime_text))
 for marker in (
     "Planning", "Routing", "Ownership", "Verification", "Evidence",
-    "single-semantic-context invariant", "Mode: Lean Primary", "Host does not reread file contents",
+    "Sol xhigh", "Luna Max Fast", "Terra is forbidden", "Mode: Single Executor",
     "deterministic candidate persistence", "persist-visible-candidate.sh", "VISIBLE_CANDIDATE", "Final file SHA256",
     "timeout_ms=3600000", "PYTHONDONTWRITEBYTECODE=1", "evaluation isolation",
     "explicit", "Requirement ID", "write_scope",
     "one owner", "live capacity", "Native Nested", "Compatibility",
     "fork_turns=\"none\"", "Fail Closed", "PASS | FIX | BLOCKED",
-    "Verdict: PASS | REVIEW_REQUIRED | BLOCKED", "zero Sol child calls",
-    "verify the verifier", "result-only", "resume packet",
+    "Status: PASS | REPLAN_NEEDED | BLOCKED", "one Sol semantic controller",
+    "verify the verifier", "result-only", "resume packet", "Direct", "Controlled AIR",
     "air-controller", "air-critical-controller", "air-complex-worker", "air-efficient-worker", "air-challenger",
 ):
     if marker.lower() not in combined.lower():
@@ -201,20 +201,20 @@ if not re.search(r"(?m)^\s*allow_implicit_invocation:\s*false\s*$", compat_text)
 
 expected_agents = {
     "air-controller.toml": {
-        "name": "air-controller", "model": "gpt-5.6-luna",
-        "model_reasoning_effort": "max", "service_tier": "fast",
+        "name": "air-controller", "model": "gpt-5.6-sol",
+        "model_reasoning_effort": "xhigh", "service_tier": "default",
         "model_context_window": 272000, "model_auto_compact_token_limit": 244800,
         "sandbox_mode": "read-only",
     },
     "air-critical-controller.toml": {
         "name": "air-critical-controller", "model": "gpt-5.6-sol",
-        "model_reasoning_effort": "max", "service_tier": "default",
+        "model_reasoning_effort": "xhigh", "service_tier": "default",
         "model_context_window": 272000, "model_auto_compact_token_limit": 244800,
         "sandbox_mode": "read-only",
     },
     "air-complex-worker.toml": {
-        "name": "air-complex-worker", "model": "gpt-5.6-terra",
-        "model_reasoning_effort": "max", "service_tier": "default",
+        "name": "air-complex-worker", "model": "gpt-5.6-luna",
+        "model_reasoning_effort": "max", "service_tier": "fast",
         "model_context_window": 272000, "model_auto_compact_token_limit": 244800,
         "sandbox_mode": "workspace-write",
     },
@@ -226,11 +226,14 @@ expected_agents = {
     },
     "air-challenger.toml": {
         "name": "air-challenger", "model": "gpt-5.6-sol",
-        "model_reasoning_effort": "max", "service_tier": "default",
+        "model_reasoning_effort": "xhigh", "service_tier": "default",
         "model_context_window": 272000, "model_auto_compact_token_limit": 244800,
         "sandbox_mode": "read-only",
     },
 }
+agent_paths = sorted((root / ".codex/agents").glob("*.toml"))
+if [path.name for path in agent_paths] != sorted(expected_agents):
+    stop()
 for filename, expected in expected_agents.items():
     path = root / ".codex/agents" / filename
     try:
@@ -245,9 +248,9 @@ for filename, expected in expected_agents.items():
         stop()
     if filename in {"air-complex-worker.toml", "air-efficient-worker.toml", "air-challenger.toml"} and not re.search(r"(?:do not|never) .*?(?:spawn|create).*?subagent", instructions, re.I | re.S):
         stop()
-    if filename in {"air-controller.toml", "air-efficient-worker.toml"} and data.get("features", {}).get("fast_mode") is not True:
+    if filename in {"air-complex-worker.toml", "air-efficient-worker.toml"} and data.get("features", {}).get("fast_mode") is not True:
         stop()
-    if filename in {"air-controller.toml", "air-efficient-worker.toml"}:
+    if filename in {"air-complex-worker.toml", "air-efficient-worker.toml"}:
         for key, value in {
             "model_verbosity": "low",
             "model_reasoning_summary": "none",
@@ -256,13 +259,15 @@ for filename, expected in expected_agents.items():
         }.items():
             if data.get(key) != value:
                 stop()
-    if filename == "air-efficient-worker.toml":
+    if filename in {"air-complex-worker.toml", "air-efficient-worker.toml"}:
         if data.get("agents", {}).get("enabled") is not False:
             stop()
 
 luna_profiles = []
-for path in sorted((root / ".codex/agents").glob("*.toml")):
+for path in agent_paths:
     data = tomllib.loads(text(path))
+    if data.get("model") == "gpt-5.6-terra":
+        stop()
     if data.get("model") == "gpt-5.6-luna":
         luna_profiles.append(path.name)
         if data.get("model_reasoning_effort") != "max":
@@ -271,7 +276,7 @@ for path in sorted((root / ".codex/agents").glob("*.toml")):
             stop()
         if data.get("features", {}).get("fast_mode") is not True:
             stop()
-if luna_profiles != ["air-controller.toml", "air-efficient-worker.toml"]:
+if luna_profiles != ["air-complex-worker.toml", "air-efficient-worker.toml"]:
     stop()
 
 hard_benchmark = json.loads(text(root / "tests/fixtures/deepswe-v11-ab.json"))

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18">
   <title>Codex AIR routing and evidence plane</title>
-  <desc>Four routes compare DIRECT, LEAN PRIMARY, COORDINATED, and CRITICAL; Luna Primary reviews and decides Lean while the Host mechanically persists and relays the result.</desc>
+  <desc>Four routes compare DIRECT, CONTROLLED AIR, PARALLEL, and CRITICAL; Sol plans and reviews while Luna executes and verifies.</desc>
 
   <rect width="1200" height="520" fill="#0B1020"/>
   <rect x="28" y="24" width="1144" height="472" rx="24" fill="#111A30" stroke="#9AA6B8" stroke-opacity="0.35" stroke-width="2"/>
@@ -19,14 +19,14 @@
   <path d="M1030 128L1016 120V136Z" fill="#9AA6B8"/>
   <text x="1110" y="134" text-anchor="end" fill="#F7F3E8" font-size="20" font-weight="700">DONE</text>
 
-  <text x="76" y="204" fill="#F7F3E8" font-size="22" font-weight="800">LEAN PRIMARY</text>
-  <text x="76" y="226" fill="#9AA6B8" font-size="18">One Luna Max Fast context · self-reviewed verdict</text>
+  <text x="76" y="204" fill="#F7F3E8" font-size="22" font-weight="800">CONTROLLED AIR</text>
+  <text x="76" y="226" fill="#9AA6B8" font-size="18">Sol xhigh plans and reviews · Luna Max Fast executes</text>
   <path d="M362 206H1078" fill="none" stroke="#FF6B3D" stroke-width="3" stroke-linecap="round"/>
   <circle cx="650" cy="206" r="8" fill="#FF6B3D"/>
   <circle cx="860" cy="206" r="8" fill="#FF6B3D"/>
   <path d="M1078 206L1064 198V214Z" fill="#FF6B3D"/>
 
-  <text x="76" y="282" fill="#F7F3E8" font-size="20" font-weight="800">COORDINATED → EFFICIENT</text>
+  <text x="76" y="282" fill="#F7F3E8" font-size="20" font-weight="800">PARALLEL → LUNA EXECUTORS</text>
   <text x="76" y="306" fill="#65D6C4" font-size="18">Bounded task</text>
   <text x="76" y="326" fill="#65D6C4" font-size="18">unique owner</text>
   <text x="76" y="346" fill="#65D6C4" font-size="18">evidence → controller</text>

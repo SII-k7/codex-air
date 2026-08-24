@@ -1,29 +1,29 @@
 # Runtime surface matrix
 
 Release-time evidence for Codex AIR. Configuration, an agent label, or a child
-self-report is not runtime proof. Statuses are `VERIFIED`, `FAILED`, or
-`UNVERIFIED`.
+self-report is not runtime proof. Statuses are `VERIFIED`, `FAILED`,
+`UNVERIFIED`, or `RETAINED HISTORICAL`.
 
-Candidate date: 2026-08-22
+Candidate date: 2026-08-24
 
 ## Optimized fork profile
 
 | Surface | Signal | Status | Evidence location | Date |
 | --- | --- | --- | --- | --- |
-| Local repository | five agent TOMLs, canonical and compatibility Skills, validators | VERIFIED | Repository structural validation and 150 unittest cases passed locally; Skill Creator `quick_validate.py` passed for both Skill entries | 2026-08-22 |
+| Local repository | five agent TOMLs, canonical and compatibility Skills, validators | VERIFIED | `bash scripts/test.sh` passed 94 tests; Skill Creator `quick_validate.py` passed both Skill entries | 2026-08-24 |
 | POSIX-compatible shell simulation | install, doctor, rollback, uninstall, managed v5/v6-to-v7 upgrade and restore | VERIFIED | Isolated HOME lifecycle tests passed for fresh installs and both legacy migration families | 2026-08-22 |
 | Native Ubuntu/macOS CI | validation and complete unittest lifecycle | VERIFIED | Single-contributor `main` run [32564633665](https://github.com/SII-k7/codex-air/actions/runs/32564633665), Ubuntu and macOS with Python 3.11 and 3.13 | 2026-08-22 |
 | Windows PowerShell | install, rollback, uninstall | VERIFIED | Local Windows PowerShell 5.1 lifecycle contract passed | 2026-08-21 |
 | Native Windows CI | validation and complete install lifecycle | VERIFIED | Single-contributor `main` run [32564633619](https://github.com/SII-k7/codex-air/actions/runs/32564633619), Windows Server 2022 and `windows-latest`, Windows PowerShell and PowerShell 7 | 2026-08-22 |
 | Ubuntu Codex CLI | installed Skill discovery and `air-efficient-worker` selection | VERIFIED | Fresh root session `01a0247f-7a8a-7250-b6ac-0d0810edafc6` launched child `01a0247f-c7db-7c80-8630-4752ff1433ed`; remaining four custom selections were not exercised | 2026-08-21 |
-| Lean optimized model | new low-verbosity/tool-cap `air-efficient-worker` profile on Luna/max/Fast | UNVERIFIED | An earlier child turn proved Luna/max with requested Fast, but the new latency profile has not yet received a matched live rerun and actual response tier remained `unobserved` | 2026-08-22 |
-| Remaining optimized models | Luna/max/Fast controller; Sol/max critical controller and challenger; Terra/max complex worker | UNVERIFIED | Configuration is not runtime selection proof; each still needs an authoritative live launch record | 2026-08-21 |
-| Lean Primary single-context route | Host directly launches one `air-efficient-worker`; Luna owns requirements, implementation, verification, artifact review, and terminal verdict | VERIFIED | Same fresh matched session: two Host model turns, zero controller/Terra/Sol-child calls, visible 10/10 and independent hidden 10/10; 183.001 s and, repriced on 2026-08-22, US$0.1692–0.1989 API-equivalent cost (0.509–0.598× Direct) | 2026-08-22 |
-| Parallel AIR latency-gated route | Luna/max/Fast controller admits only ≥65% parallelizable work with ≤60% largest branch and ≤15% coordination/integration; 2–3 Luna/max/Fast leaves use one concurrent batch and one aggregate review | UNVERIFIED | Static contract and forward fixtures exist; no authoritative controller-to-parallel-worker live run has been performed | 2026-08-22 |
-| Hard quality benchmark | Complete DeepSWE v1.1: 113 long-horizon coding tasks with binary resolution and verifier pass fractions | UNVERIFIED | Protocol is frozen in `tests/fixtures/deepswe-v11-ab.json`; published Sol/max 72.7% and Fable 5/max 69.7% establish non-saturation, but no Codex AIR A/B run has started | 2026-08-22 |
+| Sol control profiles | `air-controller`, `air-critical-controller`, and exceptional `air-challenger` pin Sol/xhigh/Standard | UNVERIFIED | Static configuration and validators prove requested profiles, not authoritative live model selection | 2026-08-24 |
+| Luna execution profiles | efficient and complex executors both pin Luna/max/Fast with low-output and no-nesting guards | UNVERIFIED | Static configuration proves requested tier; actual Fast response tier and matched runtime remain unobserved | 2026-08-24 |
+| Controlled AIR route | current Sol/xhigh Host or one fallback Sol controller explores and plans; one Luna executor implements; the same Sol reviews | UNVERIFIED | v1.1 static contract is complete; no matched end-to-end v1.1 runtime record yet | 2026-08-24 |
+| Parallel AIR route | Sol admits only ≥65% parallelizable work with ≤60% largest branch and ≤15% coordination; 2–3 Luna executors run one batch | UNVERIFIED | Static contract exists; no authoritative v1.1 Sol-to-parallel-Luna run has been captured | 2026-08-24 |
+| Hard quality benchmark | DeepSWE v1.1 hardest-10 paired A/B | RETAINED HISTORICAL | v1.0 AIR achieved mean partial 0.8932 vs 0.8943, 39.0% credits, 1.267 median paired time ratio, and 1/10 vs 2/10 strict resolved; v1.1 has not been rerun | 2026-08-23 |
 
-The rows below are retained upstream v1.0 evidence. They do not prove the changed
-model efforts or the two new optimized-fork roles.
+The rows below are retained upstream v1.0 evidence. They do not prove the v1.1
+Sol-control/Luna-execution route, changed efforts, or actual Fast tier.
 
 ## Retained upstream v1.0 model-neutral roles
 

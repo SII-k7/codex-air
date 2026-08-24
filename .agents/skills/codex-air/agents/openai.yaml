@@ -1,6 +1,6 @@
 interface:
   display_name: "Codex AIR"
-  short_description: "Luna-primary execution with risk-triggered review."
-  default_prompt: "使用 $codex-air，让 Luna Primary 端到端完成、验证并审核这项任务。"
+  short_description: "Sol plans and reviews; Luna Max Fast executes."
+  default_prompt: "使用 $codex-air，让 Sol 完成理解、探索、拆解与终审，让 Luna Max Fast 执行和验证。"
 policy:
   allow_implicit_invocation: false
