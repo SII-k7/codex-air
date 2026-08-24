@@ -52,6 +52,7 @@ required_files=(
   "scripts/uninstall.ps1"
   "README.md"
   "README.en.md"
+  "CHANGELOG.md"
   "CONTRIBUTING.md"
   "CODE_OF_CONDUCT.md"
   "SECURITY.md"
@@ -68,6 +69,7 @@ required_files=(
   "docs/assets/readme/control-plane-en.svg"
   "docs/release/runtime-surface-matrix.md"
   "docs/ubuntu-cli-install.md"
+  "docs/prompt-recipes.md"
   "tests/windows-lifecycle.ps1"
   "tests/fixtures/forward-cases.json"
   "tests/fixtures/v100-ab-benchmark.json"
@@ -345,7 +347,8 @@ for path in root.rglob("*"):
 
 active_public_files = (
     root / "README.md", root / "README.en.md", root / "SECURITY.md",
-    root / "CONTRIBUTING.md", root / "SUPPORT.md",
+    root / "CONTRIBUTING.md", root / "SUPPORT.md", root / "CHANGELOG.md",
+    root / "docs/prompt-recipes.md",
     root / ".github/ISSUE_TEMPLATE/config.yml",
 )
 for path in active_public_files:

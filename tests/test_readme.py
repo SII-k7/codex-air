@@ -88,17 +88,42 @@ class ReadmeContractTests(unittest.TestCase):
             self.assertRegex(text, r"(?i)API.*(?:dollar|美元).*(?:credits|计费单位)")
             self.assertIn("actual", text if path.name.endswith(".en.md") else text.replace("真实", "actual"))
 
-    def test_release_and_current_status_are_v1_1_1(self) -> None:
+    def test_release_and_current_status_are_v1_1_2(self) -> None:
         for path in READMES:
             text = read(path)
-            self.assertIn("v1.1.1", text)
-            self.assertIn("releases/tag/v1.1.1", text)
+            self.assertIn("v1.1.2", text)
+            self.assertIn("releases/tag/v1.1.2", text)
 
     def test_quickstarts_cover_posix_and_windows(self) -> None:
         for path in READMES:
             text = read(path)
             for marker in ("scripts/validate.sh", "scripts/install.sh", "scripts/doctor.sh", "scripts/validate.ps1", "scripts/install.ps1"):
                 self.assertIn(marker, text)
+
+    def test_first_run_guidance_precedes_architecture_and_benchmark(self) -> None:
+        zh, en = (read(path) for path in READMES)
+        self.assertLess(zh.index("## 适合你吗"), zh.index("## 为什么是这个架构"))
+        self.assertLess(zh.index("## 60 秒开始"), zh.index("## 为什么是这个架构"))
+        self.assertLess(en.index("## Is AIR for you?"), en.index("## Why this architecture"))
+        self.assertLess(en.index("## 60-second quickstart"), en.index("## Why this architecture"))
+        for text in (zh, en):
+            self.assertIn("docs/prompt-recipes.md", text)
+            self.assertIn("CHANGELOG.md", text)
+
+    def test_community_surface_has_no_stale_public_identity(self) -> None:
+        paths = (
+            ROOT / "CONTRIBUTING.md",
+            ROOT / "SUPPORT.md",
+            ROOT / "SECURITY.md",
+            ROOT / ".github" / "ISSUE_TEMPLATE" / "bug_report.yml",
+            ROOT / ".github" / "ISSUE_TEMPLATE" / "feature_request.yml",
+        )
+        for path in paths:
+            text = read(path)
+            self.assertNotIn("Codex Codex AIR", text, path.name)
+            self.assertNotIn("v0.4.1", text, path.name)
+        self.assertIn("1.1.x", read(ROOT / "SECURITY.md"))
+        self.assertIn("discussions", read(ROOT / "SUPPORT.md").lower())
 
     def test_documentation_limitations_and_license_exist(self) -> None:
         for path in READMES:

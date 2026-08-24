@@ -1,11 +1,12 @@
 # Support
 
-Codex Codex AIR is maintained for the latest tagged release and the current `main` branch. The supported installation surfaces are macOS and Linux through the POSIX lifecycle scripts, plus Windows through Windows PowerShell 5.1 and PowerShell 7.
+Codex AIR is maintained for the latest tagged release and the current `main` branch. The supported installation surfaces are macOS and Linux through the POSIX lifecycle scripts, plus Windows through Windows PowerShell 5.1 and PowerShell 7.
 
 Exact custom-agent selection, models, reasoning effort, permissions, and nested delegation depend on the Codex host. The repository documents only runtime surfaces for which evidence has been recorded; GitHub-hosted Windows validation is not proof of every physical Windows or Codex Desktop configuration.
 
 ## Where to ask
 
+- Usage question or early idea: start a [GitHub Discussion](https://github.com/SII-k7/codex-air/discussions).
 - Reproducible repository defect: use the [bug report form](https://github.com/SII-k7/codex-air/issues/new?template=bug_report.yml).
 - Focused improvement proposal: use the [feature request form](https://github.com/SII-k7/codex-air/issues/new?template=feature_request.yml).
 - Security-sensitive behavior: follow the [security policy](SECURITY.md) and report it privately.

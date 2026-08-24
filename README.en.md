@@ -5,7 +5,8 @@
 <p align="center">
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml"><img alt="POSIX CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/posix-validation.yml?branch=main&amp;label=POSIX&amp;style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/windows-validation.yml?branch=main&amp;label=Windows&amp;style=flat-square"></a>
-  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.1.1"><img alt="release v1.1.1" src="https://img.shields.io/badge/release-v1.1.1-2563eb?style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/releases/latest"><img alt="latest release" src="https://img.shields.io/github/v/release/SII-k7/codex-air?display_name=tag&amp;style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/SII-k7/codex-air?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 License" src="https://img.shields.io/github/license/SII-k7/codex-air?style=flat-square"></a>
 </p>
 
@@ -27,6 +28,53 @@
   executors concurrently.
 
 Repository: [SII-k7/codex-air](https://github.com/SII-k7/codex-air). Codex AIR is independently designed and maintained by SII-k7; it is not an official OpenAI product or endorsement. `$codex-prove` remains an explicit compatibility command only.
+
+## Is AIR for you?
+
+| Use AIR | Keep using Codex directly |
+| --- | --- |
+| Cross-file refactors, migrations, and difficult bug fixes | Questions, explanations, or tiny localized edits |
+| Work that needs repository exploration before long execution | Work already localized and finishable in minutes |
+| Tasks with observable acceptance criteria, final-diff review, and test evidence | Open-ended discussion or solution brainstorming only |
+| You want inexpensive Luna execution with a Sol final review | Your environment cannot use Codex Skills or custom agents |
+
+AIR does not mean “launch agents for every request.” It activates only when you explicitly enter `$codex-air`, and admitted short tasks still stay Direct.
+
+## 60-second quickstart
+
+### Ubuntu / macOS / Linux
+
+```sh
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+git clone https://github.com/SII-k7/codex-air.git
+cd codex-air
+bash scripts/validate.sh
+bash scripts/install.sh
+bash scripts/doctor.sh --require-codex
+```
+
+### Windows
+
+```powershell
+git clone https://github.com/SII-k7/codex-air.git
+Set-Location codex-air
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1
+```
+
+Start a new Codex session after installation and paste this task:
+
+```text
+$codex-air
+
+Goal: Refactor authentication while preserving the current API.
+Done when: Tests and build pass; do not modify payments.
+Output language: English.
+```
+
+Provide the goal, observable completion conditions, and hard boundaries. AIR chooses Direct, one executor, or a parallel route. See [copy-ready prompt recipes](docs/prompt-recipes.md) for more scenarios and the [Ubuntu guide](docs/ubuntu-cli-install.md) for detailed installation and troubleshooting.
+
+Codex AIR is explicit-only. Requests without `$codex-air` remain Direct. Remove global routing left by an old install with `bash scripts/default.sh disable`.
 
 ## Why this architecture
 
@@ -141,40 +189,6 @@ tier.
 
 Official sources: [models overview](https://developers.openai.com/api/docs/models), [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna), [API pricing](https://developers.openai.com/api/docs/pricing), [Codex Fast mode](https://learn.chatgpt.com/docs/agent-configuration/speed), and [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents).
 
-## 60-second quickstart
-
-### Ubuntu / macOS / Linux
-
-```sh
-curl -fsSL https://chatgpt.com/codex/install.sh | sh
-git clone https://github.com/SII-k7/codex-air.git
-cd codex-air
-bash scripts/validate.sh
-bash scripts/install.sh
-bash scripts/doctor.sh --require-codex
-```
-
-### Windows
-
-```powershell
-git clone https://github.com/SII-k7/codex-air.git
-Set-Location codex-air
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1
-```
-
-Start a new Codex session after installation:
-
-```text
-$codex-air
-
-Goal: Refactor authentication while preserving the current API.
-Done when: Tests and build pass; do not modify payments.
-```
-
-Codex AIR is explicit-only. Requests without `$codex-air` remain Direct. Remove
-global routing left by an old install with `bash scripts/default.sh disable`.
-
 ## How it works
 
 ### Controller selection
@@ -245,7 +259,7 @@ disabled subagents to reduce non-delivery tokens and recursion.
 
 ## Current status
 
-The current stable version is [`v1.1.1`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.1). `v1.1.1` only prevents the POSIX installer byte test from running on Windows CI; its runtime architecture is identical to `v1.1.0`.
+The current stable version is [`v1.1.2`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.2). `v1.1.2` improves first-run guidance, task examples, and community entry points; its runtime architecture is identical to `v1.1.0`.
 
 | Surface | Status |
 | --- | --- |
@@ -286,9 +300,12 @@ docs/                           release evidence, designs, README assets
 - [Public Skill](.agents/skills/codex-air/SKILL.md)
 - [Orchestration contract](.agents/skills/codex-air/references/orchestration.md)
 - [Runtime notes](.agents/skills/codex-air/references/runtime-notes.md)
+- [Copy-ready prompt recipes](docs/prompt-recipes.md)
 - [DeepSWE v1.1 hardest-10 result](tests/deepswe-v11-hardest10-results.md)
 - [Runtime surface matrix](docs/release/runtime-surface-matrix.md)
+- [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
+- [Support and discussions](SUPPORT.md)
 - [Security policy](SECURITY.md)
 
 ## Limitations

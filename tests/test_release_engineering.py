@@ -118,6 +118,7 @@ class ReleaseEngineeringTests(unittest.TestCase):
             self.assertIn("posix-validation.yml", text)
             self.assertIn("windows-validation.yml", text)
             for community_file in (
+                "CHANGELOG.md",
                 "CONTRIBUTING.md",
                 "CODE_OF_CONDUCT.md",
                 "SECURITY.md",
@@ -125,6 +126,7 @@ class ReleaseEngineeringTests(unittest.TestCase):
                 "bug_report.yml",
                 "feature_request.yml",
                 "pull_request_template.md",
+                "prompt-recipes.md",
             ):
                 self.assertIn(community_file, text)
 

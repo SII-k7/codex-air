@@ -6,8 +6,8 @@ Security fixes target the latest tagged release and the current `main` branch.
 
 | Version | Supported |
 | --- | --- |
-| `0.4.x` | Yes |
-| `< 0.4` | No |
+| `1.1.x` | Yes |
+| `< 1.1` | No |
 
 ## Reporting a vulnerability
 

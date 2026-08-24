@@ -74,6 +74,7 @@ $requiredFiles = @(
     "scripts/benchmark_ab.py",
     "README.md",
     "README.en.md",
+    "CHANGELOG.md",
     "CONTRIBUTING.md",
     "CODE_OF_CONDUCT.md",
     "SECURITY.md",
@@ -94,6 +95,7 @@ $requiredFiles = @(
     "tests/test_default_routing.py",
     "CODEX_AIR_V1_IMPLEMENTATION_REPORT.md",
     "docs/ubuntu-cli-install.md",
+    "docs/prompt-recipes.md",
     ".github/workflows/windows-validation.yml",
     ".github/workflows/posix-validation.yml",
     "NOTICE",
@@ -267,7 +269,7 @@ foreach ($forbidden in @("IPZOR", "Buzz", "DeepSeek", "OpenPencil")) {
     }
 }
 
-foreach ($activeFile in @("README.md", "README.en.md", "SECURITY.md", "CONTRIBUTING.md", "SUPPORT.md", ".github/ISSUE_TEMPLATE/config.yml")) {
+foreach ($activeFile in @("README.md", "README.en.md", "SECURITY.md", "CONTRIBUTING.md", "SUPPORT.md", "CHANGELOG.md", "docs/prompt-recipes.md", ".github/ISSUE_TEMPLATE/config.yml")) {
     Assert-Condition ((Get-Text (Join-Path $repoRoot $activeFile)) -notmatch 'github\.com/yehyakin/codex-codex-air') "old repository URL remains in active documentation"
 }
 

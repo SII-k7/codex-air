@@ -5,7 +5,8 @@
 <p align="center">
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml"><img alt="POSIX CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/posix-validation.yml?branch=main&amp;label=POSIX&amp;style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/windows-validation.yml?branch=main&amp;label=Windows&amp;style=flat-square"></a>
-  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.1.1"><img alt="release v1.1.1" src="https://img.shields.io/badge/release-v1.1.1-2563eb?style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/releases/latest"><img alt="latest release" src="https://img.shields.io/github/v/release/SII-k7/codex-air?display_name=tag&amp;style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/SII-k7/codex-air?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 License" src="https://img.shields.io/github/license/SII-k7/codex-air?style=flat-square"></a>
 </p>
 
@@ -22,6 +23,52 @@
 - 只有通过量化门槛的独立工作流才并行启动 2–3 个 Luna executor。
 
 项目仓库：[SII-k7/codex-air](https://github.com/SII-k7/codex-air)。Codex AIR 由 SII-k7 独立设计和维护，不代表 OpenAI 官方产品或背书；`$codex-prove` 仅作为旧命令的显式兼容入口。
+
+## 适合你吗
+
+| 适合使用 AIR | 继续直接使用 Codex |
+| --- | --- |
+| 跨文件重构、迁移、复杂缺陷修复 | 问答、解释或很小的局部修改 |
+| 需要先探索仓库，再执行长程实现 | 已经完全定位、几分钟能完成的任务 |
+| 有明确验收条件，并重视最终 diff 与测试证据 | 只需要开放式讨论或方案发散 |
+| 希望把主要执行量放到低成本 Luna，同时保留 Sol 终审 | 当前环境不能使用 Codex Skills 或自定义 agents |
+
+AIR 不是“所有请求都多开 agent”。它只在你显式输入 `$codex-air` 时进入；即使进入，短任务仍会走 Direct。
+
+## 60 秒开始
+
+### Ubuntu / macOS / Linux
+
+```sh
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+git clone https://github.com/SII-k7/codex-air.git
+cd codex-air
+bash scripts/validate.sh
+bash scripts/install.sh
+bash scripts/doctor.sh --require-codex
+```
+
+### Windows
+
+```powershell
+git clone https://github.com/SII-k7/codex-air.git
+Set-Location codex-air
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1
+```
+
+安装后启动新的 Codex 会话，直接复制下面这条任务：
+
+```text
+$codex-air
+
+目标：重构认证模块并保持现有 API 兼容。
+完成条件：测试和构建通过；不修改支付模块。
+```
+
+你只需要给出目标、可观察的完成条件和不能越过的边界；AIR 会自行判断 Direct、单 executor 或并行路径。更多场景见[可复制的任务模板](docs/prompt-recipes.md)，Ubuntu 的完整安装与排障见[详细指南](docs/ubuntu-cli-install.md)。
+
+Codex AIR 仅显式触发；未出现 `$codex-air` 的请求保持 Direct。旧版本写入的全局默认路由可用 `bash scripts/default.sh disable` 清理。
 
 ## 为什么是这个架构
 
@@ -113,39 +160,6 @@ OpenAI 当前说明 Codex Fast 约提供 **1.5×** 生成速度，并在 ChatGPT
 
 官方来源：[模型概览](https://developers.openai.com/api/docs/models)、[GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna)、[API pricing](https://developers.openai.com/api/docs/pricing)、[Codex Fast mode](https://learn.chatgpt.com/docs/agent-configuration/speed)、[Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)。
 
-## 60 秒开始
-
-### Ubuntu / macOS / Linux
-
-```sh
-curl -fsSL https://chatgpt.com/codex/install.sh | sh
-git clone https://github.com/SII-k7/codex-air.git
-cd codex-air
-bash scripts/validate.sh
-bash scripts/install.sh
-bash scripts/doctor.sh --require-codex
-```
-
-### Windows
-
-```powershell
-git clone https://github.com/SII-k7/codex-air.git
-Set-Location codex-air
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install.ps1
-```
-
-安装后启动新的 Codex 会话：
-
-```text
-$codex-air
-
-目标：重构认证模块并保持现有 API 兼容。
-完成条件：测试和构建通过；不修改支付模块。
-```
-
-Codex AIR 仅显式触发；未出现 `$codex-air` 的请求保持 Direct。旧版本写入的全局默认路由可用 `bash scripts/default.sh disable` 清理。
-
 ## 工作方式
 
 ### Controller 选择
@@ -194,7 +208,7 @@ Codex AIR 仅显式触发；未出现 `$codex-air` 的请求保持 Direct。旧�
 
 ## 当前状态
 
-当前稳定版本是 [`v1.1.1`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.1)。`v1.1.1` 只修正 POSIX 专用安装测试在 Windows CI 上的错误执行，运行架构与 `v1.1.0` 相同。
+当前稳定版本是 [`v1.1.2`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.2)。`v1.1.2` 改善首次使用、任务示例与社区入口；运行架构与 `v1.1.0` 相同。
 
 | 验证面 | 状态 |
 | --- | --- |
@@ -231,9 +245,12 @@ docs/                           发布证据、设计记录与 README 资源
 - [Public Skill](.agents/skills/codex-air/SKILL.md)
 - [编排契约](.agents/skills/codex-air/references/orchestration.md)
 - [运行时说明](.agents/skills/codex-air/references/runtime-notes.md)
+- [可复制的任务模板](docs/prompt-recipes.md)
 - [DeepSWE v1.1 hardest-10 定量结果](tests/deepswe-v11-hardest10-results.md)
 - [运行表面矩阵](docs/release/runtime-surface-matrix.md)
+- [版本记录](CHANGELOG.md)
 - [贡献指南](CONTRIBUTING.md)
+- [支持与讨论](SUPPORT.md)
 - [安全策略](SECURITY.md)
 
 ## 限制
