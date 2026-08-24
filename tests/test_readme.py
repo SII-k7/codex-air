@@ -88,11 +88,11 @@ class ReadmeContractTests(unittest.TestCase):
             self.assertRegex(text, r"(?i)API.*(?:dollar|美元).*(?:credits|计费单位)")
             self.assertIn("actual", text if path.name.endswith(".en.md") else text.replace("真实", "actual"))
 
-    def test_release_and_current_status_are_v1_1_0(self) -> None:
+    def test_release_and_current_status_are_v1_1_1(self) -> None:
         for path in READMES:
             text = read(path)
-            self.assertIn("v1.1.0", text)
-            self.assertIn("releases/tag/v1.1.0", text)
+            self.assertIn("v1.1.1", text)
+            self.assertIn("releases/tag/v1.1.1", text)
 
     def test_quickstarts_cover_posix_and_windows(self) -> None:
         for path in READMES:

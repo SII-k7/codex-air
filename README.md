@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml"><img alt="POSIX CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/posix-validation.yml?branch=main&amp;label=POSIX&amp;style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/windows-validation.yml?branch=main&amp;label=Windows&amp;style=flat-square"></a>
-  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.1.0"><img alt="release v1.1.0" src="https://img.shields.io/badge/release-v1.1.0-2563eb?style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.1.1"><img alt="release v1.1.1" src="https://img.shields.io/badge/release-v1.1.1-2563eb?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 License" src="https://img.shields.io/github/license/SII-k7/codex-air?style=flat-square"></a>
 </p>
 
@@ -194,7 +194,7 @@ Codex AIR 仅显式触发；未出现 `$codex-air` 的请求保持 Direct。旧�
 
 ## 当前状态
 
-当前稳定版本是 [`v1.1.0`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.0)。
+当前稳定版本是 [`v1.1.1`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.1)。`v1.1.1` 只修正 POSIX 专用安装测试在 Windows CI 上的错误执行，运行架构与 `v1.1.0` 相同。
 
 | 验证面 | 状态 |
 | --- | --- |

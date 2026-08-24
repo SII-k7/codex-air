@@ -53,7 +53,7 @@ class RenameMigrationContractTests(unittest.TestCase):
         for relative in ("README.md", "README.en.md"):
             text = read(ROOT / relative)
             self.assertIn(REPOSITORY, text, relative)
-            self.assertIn("v1.1.0", text, relative)
+            self.assertIn("v1.1.1", text, relative)
             self.assertIn("docs/release/runtime-surface-matrix.md", text, relative)
             self.assertIn("$codex-prove", text, relative)
             self.assertIn("$codex-air", text, relative)

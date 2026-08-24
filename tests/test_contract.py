@@ -35,8 +35,8 @@ def agent(name: str) -> dict:
 
 
 class RepositoryAndInvocationTests(unittest.TestCase):
-    def test_release_version_is_1_1_0(self) -> None:
-        self.assertEqual("1.1.0", read(ROOT / "VERSION").strip())
+    def test_release_version_is_1_1_1(self) -> None:
+        self.assertEqual("1.1.1", read(ROOT / "VERSION").strip())
 
     def test_canonical_skill_is_explicit_only(self) -> None:
         skill = read(SKILL_ROOT / "SKILL.md")

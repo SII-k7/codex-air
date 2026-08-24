@@ -94,6 +94,8 @@ class InstalledProfileTests(unittest.TestCase):
         self.assertNotIn('"gpt-5.6-terra"', doctor)
 
     def test_fresh_install_preserves_exact_profile_bytes(self) -> None:
+        if os.name == "nt":
+            self.skipTest("POSIX installer; Windows byte lifecycle is covered by windows-lifecycle.ps1")
         with tempfile.TemporaryDirectory(prefix="codex-air-v11-") as raw:
             home = Path(raw)
             result = subprocess.run(

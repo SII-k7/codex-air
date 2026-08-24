@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml"><img alt="POSIX CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/posix-validation.yml?branch=main&amp;label=POSIX&amp;style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/windows-validation.yml?branch=main&amp;label=Windows&amp;style=flat-square"></a>
-  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.1.0"><img alt="release v1.1.0" src="https://img.shields.io/badge/release-v1.1.0-2563eb?style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.1.1"><img alt="release v1.1.1" src="https://img.shields.io/badge/release-v1.1.1-2563eb?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 License" src="https://img.shields.io/github/license/SII-k7/codex-air?style=flat-square"></a>
 </p>
 
@@ -245,7 +245,7 @@ disabled subagents to reduce non-delivery tokens and recursion.
 
 ## Current status
 
-The current stable version is [`v1.1.0`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.0).
+The current stable version is [`v1.1.1`](https://github.com/SII-k7/codex-air/releases/tag/v1.1.1). `v1.1.1` only prevents the POSIX installer byte test from running on Windows CI; its runtime architecture is identical to `v1.1.0`.
 
 | Surface | Status |
 | --- | --- |
