@@ -38,17 +38,18 @@ does not assume every real task should be delegated.
 ## Current cost result
 
 The current public model uses relative subscription-credit weights rather than
-claiming a measured A/B saving: Sol = **1**, Terra High = **0.4**, and Luna Max
-= **0.04**. API dollars and subscription credits are separate accounting units;
-the exact API and credit rows remain documented in the bilingual README.
+claiming a measured A/B saving: Sol = **1**, Terra High = **0.5**, and Luna Max
+= **0.05**. The rate card was checked again on 2026-08-24. API dollars and
+subscription credits are separate accounting units; the exact API and credit
+rows remain documented in the bilingual README.
 
 The scenario/model projection is published as ranges, not as a single direct
 task promise:
 
-- ordinary bounded work: **72%-76%**;
-- mixed Sol/Terra/Luna routing: **50%-60%**;
-- complex work kept Direct: **33%-43%**;
-- composite center: approximately **56%**.
+- ordinary bounded work: **69.5%-73.5%**;
+- mixed Sol/Terra/Luna routing: **46.0%-56.0%**;
+- complex Sol/Terra/Luna routing: **27.2%-37.2%**;
+- equal-scenario composite center: approximately **51.6%**.
 
 These are scenario/model projections from official rates and declared routing assumptions,
 not a newly measured matched A/B experiment. No complex **65%** direct

@@ -43,14 +43,14 @@
   ],
   "cost": {
     "sol_relative_credit_weight": {"value": 1.0, "evidence": "scenario_model_projection"},
-    "terra_relative_credit_weight": {"value": 0.4, "evidence": "scenario_model_projection"},
-    "luna_relative_credit_weight": {"value": 0.04, "evidence": "scenario_model_projection"},
-    "ordinary_saving_min_percent": {"value": 72.2, "evidence": "scenario_model_projection"},
-    "ordinary_saving_max_percent": {"value": 76.2, "evidence": "scenario_model_projection"},
-    "mixed_saving_min_percent": {"value": 50.4, "evidence": "scenario_model_projection"},
-    "mixed_saving_max_percent": {"value": 60.4, "evidence": "scenario_model_projection"},
-    "complex_direct_saving_min_percent": {"value": 33.4, "evidence": "scenario_model_projection"},
-    "complex_direct_saving_max_percent": {"value": 43.4, "evidence": "scenario_model_projection"},
-    "composite_center_percent": {"value": 56, "evidence": "scenario_model_projection"}
+    "terra_relative_credit_weight": {"value": 0.5, "evidence": "scenario_model_projection"},
+    "luna_relative_credit_weight": {"value": 0.05, "evidence": "scenario_model_projection"},
+    "ordinary_saving_min_percent": {"value": 69.5, "evidence": "scenario_model_projection"},
+    "ordinary_saving_max_percent": {"value": 73.5, "evidence": "scenario_model_projection"},
+    "mixed_saving_min_percent": {"value": 46.0, "evidence": "scenario_model_projection"},
+    "mixed_saving_max_percent": {"value": 56.0, "evidence": "scenario_model_projection"},
+    "complex_direct_saving_min_percent": {"value": 27.2, "evidence": "scenario_model_projection"},
+    "complex_direct_saving_max_percent": {"value": 37.2, "evidence": "scenario_model_projection"},
+    "composite_center_percent": {"value": 51.6, "evidence": "scenario_model_projection"}
   }
 }

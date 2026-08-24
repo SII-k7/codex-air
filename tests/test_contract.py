@@ -19,6 +19,7 @@ COMPLEX = ROOT / ".codex" / "agents" / "air-complex-worker.toml"
 EFFICIENT = ROOT / ".codex" / "agents" / "air-efficient-worker.toml"
 CHALLENGER = ROOT / ".codex" / "agents" / "air-challenger.toml"
 REPO_URL = "https://github.com/SII-k7/codex-air"
+VERSION = ROOT / "VERSION"
 
 
 def read(path: Path) -> str:
@@ -74,6 +75,7 @@ class RepositoryStructureTests(unittest.TestCase):
 
     def test_required_release_files_exist(self) -> None:
         for relative in (
+            "VERSION", "tests/deepswe-v11-hardest10-results.md",
             "CODEX_AIR_V1_IMPLEMENTATION_REPORT.md",
             "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "SECURITY.md", "SUPPORT.md",
             "scripts/install.sh", "scripts/uninstall.sh", "scripts/validate.sh",
@@ -82,6 +84,9 @@ class RepositoryStructureTests(unittest.TestCase):
             ".agents/skills/codex-air/scripts/persist-visible-candidate.sh",
         ):
             self.assertTrue((ROOT / relative).is_file(), relative)
+
+    def test_release_version_is_1_0_0(self) -> None:
+        self.assertEqual("1.0.0", read(VERSION).strip())
 
     def test_hard_benchmark_is_frozen_without_claiming_a_run(self) -> None:
         fixture = json.loads(read(ROOT / "tests/fixtures/deepswe-v11-ab.json"))

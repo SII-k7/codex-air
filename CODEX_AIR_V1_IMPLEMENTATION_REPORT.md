@@ -155,7 +155,7 @@ Current local candidate evidence:
 - Skill Creator `quick_validate.py`: canonical Skill PASS; compatibility entry
   PASS;
 - `scripts/validate.sh`: PASS;
-- full Python suite: 128 tests PASS (15 POSIX-only cases skipped on Windows);
+- full Python suite: 151 tests PASS on the v1.0.0 release candidate;
 - isolated POSIX lifecycle: PASS;
 - Bash syntax, TOML/JSON/YAML parsing, Markdown links, SVG contracts, credential
   scan, and `git diff --check`: PASS;
@@ -228,14 +228,16 @@ Fresh-session discovery passed after installation:
 ## 14. GitHub and version
 
 This migrated report belongs to the new standalone
-[`SII-k7/codex-air`](https://github.com/SII-k7/codex-air) history. The current
-candidate is tracked on `main`; this document makes no claim that a Codex AIR
-release tag already exists.
+[`SII-k7/codex-air`](https://github.com/SII-k7/codex-air) history. The verified
+release is `v1.0.0`; its annotated tag and release commit are published from
+`main`.
 
 ## 15. Known limitations
 
-- The cost ranges in the README are scenario projections from public rate ratios
-  and example token shares, not a completed matched A/B benchmark.
+- The cost ranges in the README remain scenario projections. The completed
+  DeepSWE hardest-10 matched A/B is separately reported and measured AIR at
+  39.0% of Direct credits, near-equal mean partial, and 1.267 median paired
+  latency; ten one-attempt tasks are not a statistical non-inferiority proof.
 - The retained live smoke is one historical ordered pair, not proof of v1 role
   discovery or a general quality, latency, or cost winner.
 - A local PowerShell engine is unavailable; dynamic PowerShell 5.1 and 7 passed

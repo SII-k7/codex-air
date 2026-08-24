@@ -86,15 +86,15 @@ class RealProjectBenchmarkTests(unittest.TestCase):
         cost = self.load_fixture()["cost"]
         expected = {
             "sol_relative_credit_weight": 1.0,
-            "terra_relative_credit_weight": 0.4,
-            "luna_relative_credit_weight": 0.04,
-            "ordinary_saving_min_percent": 72.2,
-            "ordinary_saving_max_percent": 76.2,
-            "mixed_saving_min_percent": 50.4,
-            "mixed_saving_max_percent": 60.4,
-            "complex_direct_saving_min_percent": 33.4,
-            "complex_direct_saving_max_percent": 43.4,
-            "composite_center_percent": 56,
+            "terra_relative_credit_weight": 0.5,
+            "luna_relative_credit_weight": 0.05,
+            "ordinary_saving_min_percent": 69.5,
+            "ordinary_saving_max_percent": 73.5,
+            "mixed_saving_min_percent": 46.0,
+            "mixed_saving_max_percent": 56.0,
+            "complex_direct_saving_min_percent": 27.2,
+            "complex_direct_saving_max_percent": 37.2,
+            "composite_center_percent": 51.6,
         }
         for key, value in expected.items():
             self.assertEqual(value, cost[key]["value"])
@@ -106,7 +106,7 @@ class RealProjectBenchmarkTests(unittest.TestCase):
         self.assertNotIn("post_gate_cost_percent", cost)
         self.assertLessEqual(
             cost["complex_direct_saving_max_percent"]["value"],
-            43.4,
+            37.2,
         )
 
     def test_report_and_readmes_publish_their_documented_evidence_boundaries(self) -> None:
@@ -116,14 +116,14 @@ class RealProjectBenchmarkTests(unittest.TestCase):
             "measured",
             "scenario_model_projection",
             "unavailable",
-            "72%-76%",
-            "50%-60%",
-            "33%-43%",
-            "56%",
+            "69.5%-73.5%",
+            "46.0%-56.0%",
+            "27.2%-37.2%",
+            "51.6%",
             "Sol = **1**",
-            "Terra High = **0.4**",
+            "Terra High = **0.5**",
             "Luna Max",
-            "0.04",
+            "0.05",
         ):
             self.assertIn(signal, report)
         historical_markers = re.compile(
@@ -138,7 +138,7 @@ class RealProjectBenchmarkTests(unittest.TestCase):
             self.assertRegex(window, historical_markers)
         for path in README_FILES:
             text = path.read_text(encoding="utf-8")
-            for signal in ("72%", "76%", "50%", "60%", "33%", "43%", "0.4", "0.04"):
+            for signal in ("69.5%", "73.5%", "46.0%", "56.0%", "27.2%", "37.2%", "0.50", "0.05"):
                 self.assertIn(signal, text, path.name)
             self.assertIn("scenario_model_projection", text, path.name)
             self.assertRegex(text, r"(?i)not matched A/B|不是匹配 A/B")

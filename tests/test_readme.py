@@ -68,7 +68,7 @@ API_RATES = {
     "GPT-5.6 Luna": ("$0.20", "$0.02", "$1.20"),
 }
 CHATGPT_RATES = {
-    "GPT-5.6 Sol": ("125", "12.5", "750"),
+    "GPT-5.6 Sol": ("100", "10", "500"),
     "GPT-5.6 Terra": ("50", "5", "300"),
     "GPT-5.6 Luna": ("5", "0.5", "30"),
 }
@@ -274,7 +274,7 @@ class ReadmeContractTests(unittest.TestCase):
         english = ENGLISH_README.read_text(encoding="utf-8")
 
         for text, path in ((chinese, CHINESE_README), (english, ENGLISH_README)):
-            for signal in ("72%", "76%", "50%", "60%", "33%", "43%", "0.4", "0.04"):
+            for signal in ("69.5%", "73.5%", "46.0%", "56.0%", "27.2%", "37.2%", "0.50", "0.05"):
                 self.assertIn(signal, text, f"{path.name}: missing cost signal {signal}")
             self.assertIn("scenario_model_projection", text, path.name)
             self.assertNotIn("sample_validated_projection", text, path.name)
@@ -331,16 +331,16 @@ class ReadmeContractTests(unittest.TestCase):
 
     def test_scenario_projection_math_is_reproducible(self) -> None:
         scenarios = (
-            ("ordinary", 0.10, 0.20, 0.70, 0.03, 0.07, 72.2, 76.2, ("Sol 10%", "Terra 20%", "Luna 70%", "3%–7%", "72.2%–76.2%")),
-            ("mixed", 0.20, 0.40, 0.40, 0.02, 0.12, 50.4, 60.4, ("Sol 20%", "Terra 40%", "Luna 40%", "2%–12%", "50.4%–60.4%")),
-            ("complex", 0.25, 0.60, 0.15, 0.07, 0.17, 33.4, 43.4, ("Sol 25%", "Terra 60%", "Luna 15%", "7%–17%", "33.4%–43.4%")),
+            ("ordinary", 0.10, 0.20, 0.70, 0.03, 0.07, 69.5, 73.5, ("Sol 10%", "Terra 20%", "Luna 70%", "3%–7%", "69.5%–73.5%")),
+            ("mixed", 0.20, 0.40, 0.40, 0.02, 0.12, 46.0, 56.0, ("Sol 20%", "Terra 40%", "Luna 40%", "2%–12%", "46.0%–56.0%")),
+            ("complex", 0.25, 0.60, 0.15, 0.07, 0.17, 27.25, 37.25, ("Sol 25%", "Terra 60%", "Luna 15%", "7%–17%", "27.2%–37.2%")),
         )
         documents = self.readme_documents()
         for name, sol, terra, luna, overhead_min, overhead_max, saving_min, saving_max, signals in scenarios:
             self.assertAlmostEqual(sol + terra + luna, 1.0, msg=name)
-            base_cost = sol + terra * 0.40 + luna * 0.04
-            self.assertAlmostEqual((1 - base_cost - overhead_max) * 100, saving_min, msg=name)
-            self.assertAlmostEqual((1 - base_cost - overhead_min) * 100, saving_max, msg=name)
+            base_cost = sol + terra * 0.50 + luna * 0.05
+            self.assertAlmostEqual((1 - base_cost - overhead_max) * 100, saving_min, places=1, msg=name)
+            self.assertAlmostEqual((1 - base_cost - overhead_min) * 100, saving_max, places=1, msg=name)
             for path, text in documents.items():
                 self.assertTrue(
                     self.block_contains_tokens(self.markdown_blocks(text), signals),
@@ -393,16 +393,16 @@ class ReadmeContractTests(unittest.TestCase):
         blocks = self.markdown_blocks(text)
         block_texts = [block for _, block, _ in blocks]
         self.assertTrue(
-            self.block_contains_tokens(blocks, ("普通", "72%", "76%")),
-            f"{CHINESE_README.name}: missing ordinary 72%-76% scenario",
+            self.block_contains_tokens(blocks, ("普通", "69.5%", "73.5%")),
+            f"{CHINESE_README.name}: missing ordinary 69.5%-73.5% scenario",
         )
         self.assertTrue(
-            self.block_contains_tokens(blocks, ("混合", "50%", "60%")),
-            f"{CHINESE_README.name}: missing mixed 50%-60% scenario",
+            self.block_contains_tokens(blocks, ("混合", "46.0%", "56.0%")),
+            f"{CHINESE_README.name}: missing mixed 46.0%-56.0% scenario",
         )
         self.assertTrue(
-            self.block_contains_tokens(blocks, ("复杂", "33%", "43%")),
-            f"{CHINESE_README.name}: missing complex 33%-43% scenario",
+            self.block_contains_tokens(blocks, ("复杂", "27.2%", "37.2%")),
+            f"{CHINESE_README.name}: missing complex 27.2%-37.2% scenario",
         )
         for block in block_texts:
             if "56%" in block and re.search(r"综合|平均", block):
@@ -426,18 +426,18 @@ class ReadmeContractTests(unittest.TestCase):
         blocks = self.markdown_blocks(text)
         block_texts = [block for _, block, _ in blocks]
         self.assertTrue(
-            self.block_contains_tokens(blocks, ("typical", "72%", "76%"))
-            or self.block_contains_tokens(blocks, ("ordinary", "72%", "76%")),
-            f"{ENGLISH_README.name}: missing ordinary 72%-76% scenario",
+            self.block_contains_tokens(blocks, ("typical", "69.5%", "73.5%"))
+            or self.block_contains_tokens(blocks, ("ordinary", "69.5%", "73.5%")),
+            f"{ENGLISH_README.name}: missing ordinary 69.5%-73.5% scenario",
         )
         self.assertTrue(
-            self.block_contains_tokens(blocks, ("mixed", "50%", "60%"))
-            or self.block_contains_tokens(blocks, ("hybrid", "50%", "60%")),
-            f"{ENGLISH_README.name}: missing mixed 50%-60% scenario",
+            self.block_contains_tokens(blocks, ("mixed", "46.0%", "56.0%"))
+            or self.block_contains_tokens(blocks, ("hybrid", "46.0%", "56.0%")),
+            f"{ENGLISH_README.name}: missing mixed 46.0%-56.0% scenario",
         )
         self.assertTrue(
-            self.block_contains_tokens(blocks, ("complex", "33%", "43%")),
-            f"{ENGLISH_README.name}: missing complex 33%-43% scenario",
+            self.block_contains_tokens(blocks, ("complex", "27.2%", "37.2%")),
+            f"{ENGLISH_README.name}: missing complex 27.2%-37.2% scenario",
         )
         for block in block_texts:
             if "56%" in block and re.search(r"(?i)composite|combined|average|fixed", block):
@@ -671,12 +671,12 @@ class ReadmeContractTests(unittest.TestCase):
                 text,
                 path.name,
             )
-            self.assertIn("2026-08-22", text, path.name)
+            self.assertIn("2026-08-24", text, path.name)
             blocks = self.markdown_blocks(text)
             for labels, value in (
                 (("Sol", "索尔"), r"1(?:\.0+)?"),
-                (("Terra", "Terra 高"), r"0\.4(?:0+)?"),
-                (("Luna", "Luna 高"), r"0\.04(?:0+)?"),
+                (("Terra", "Terra 高"), r"0\.5(?:0+)?"),
+                (("Luna", "Luna 高"), r"0\.05(?:0+)?"),
             ):
                 self.assertTrue(
                     any(
@@ -687,9 +687,9 @@ class ReadmeContractTests(unittest.TestCase):
                     f"{path.name}: missing relative credit weight {labels[0]}={value}",
                 )
             for labels, values in (
-                (("ordinary", "typical", "普通"), ("72%", "76%")),
-                (("mixed", "hybrid", "混合"), ("50%", "60%")),
-                (("complex", "复杂"), ("33%", "43%")),
+                (("ordinary", "typical", "普通"), ("69.5%", "73.5%")),
+                (("mixed", "hybrid", "混合"), ("46.0%", "56.0%")),
+                (("complex", "复杂"), ("27.2%", "37.2%")),
             ):
                 self.assertTrue(
                     any(
@@ -789,14 +789,14 @@ class ReadmeContractTests(unittest.TestCase):
             "gpt-5.6-terra",
             "https://developers.openai.com/api/docs/models/compare",
             "https://help.openai.com/en/articles/20001106-codex-rate-card",
-            "72%",
-            "76%",
-            "50%",
-            "60%",
-            "33%",
-            "43%",
-            "0.4",
-            "0.04",
+            "69.5%",
+            "73.5%",
+            "46.0%",
+            "56.0%",
+            "27.2%",
+            "37.2%",
+            "0.50",
+            "0.05",
             "0%",
             "route_cost",
             "saving = 1 - route_cost",

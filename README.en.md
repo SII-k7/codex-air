@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml"><img alt="POSIX CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/posix-validation.yml?branch=main&amp;label=POSIX&amp;style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/windows-validation.yml?branch=main&amp;label=Windows&amp;style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.0.0"><img alt="release v1.0.0" src="https://img.shields.io/badge/release-v1.0.0-2563eb?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 License" src="https://img.shields.io/github/license/SII-k7/codex-air?style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/SII-k7/codex-air?style=flat-square"></a>
 </p>
@@ -31,15 +32,41 @@ Runtime output defaults to Simplified Chinese unless the user explicitly request
 
 Repository: [SII-k7/codex-air](https://github.com/SII-k7/codex-air). Codex AIR is independently designed and maintained by SII-k7; it is not an official OpenAI product or endorsement. `$codex-prove` is only a compatibility command.
 
+## v1.0.0 quantitative evaluation
+
+On 2026-08-23, Codex AIR completed a paired DeepSWE v1.1 hardest-10 A/B. Ten difficult coding tasks each received one Direct Sol/xhigh/Standard attempt and one Codex AIR attempt (thin Sol/xhigh/Standard Host plus Luna/max/Fast Primary), for 20 valid cells. The run used frozen task order, identical OCI images, hidden verifiers, and four-way concurrency.
+
+| Metric | Direct Sol/xhigh | Codex AIR | Quantitative result |
+| --- | ---: | ---: | --- |
+| Strictly resolved | 2/10 | 1/10 | AIR resolved one fewer task; the strict quality gate did not pass |
+| Mean partial | 0.8943 | 0.8932 | Nearly equal; difference 0.0011 |
+| Median task time | 20.3 min | 23.2 min | AIR was 14.4% slower |
+| Median paired time ratio | 1.000× | 1.267× | AIR was slower on 9/10 tasks |
+| Pro credits | 919.34 | 358.83 | AIR cost **39.0%** of Direct, a **61.0%** saving |
+| Recorded input + output tokens | 56,005,220 | 177,272,916 | AIR used about **3.17×** as many tokens |
+
+AIR partial quality was better on four tasks, tied on four, and worse on two. AIR was cheaper on all ten tasks and at or below half of Direct cost on eight, but faster on only one. SQLFmt was the strongest positive case: higher AIR partial, 17.2% of Direct cost, and 32.6% less time. The main gaps were Kea, where Direct strictly resolved and AIR did not, and Termenv, where AIR partial was 0.0246 lower.
+
+The accurate v1.0.0 conclusion is therefore:
+
+- **The cost target passed:** aggregate AIR cost was well below half and Luna owned most work.
+- **Strict quality non-inferiority is not established:** mean partial was nearly equal, but AIR resolved one fewer task in this 10-task, one-attempt sample.
+- **The latency target failed:** AIR's typical paired elapsed time was 26.7% higher.
+- **AIR saves price, not tokens:** it trades more inexpensive, heavily cached Luna tokens for lower credits.
+
+Valid A/B cells consumed 1,278.17 credits. Including 25.88 credits from a conservatively invalidated infrastructure batch, the accounted total was 1,304.05, below the 1,800 cap. Four-way wall time was 2h 12m 47s. See the [DeepSWE v1.1 hardest-10 result](tests/deepswe-v11-hardest10-results.md) for the complete task table, runtime boundary, and verifier correction. This is a qualitative 10-task stress test with one attempt per arm, not a statistically powered non-inferiority result.
+
+The result also exposes concrete v1.1 optimization signals: fixed orchestration has excessive startup cost on short tasks; Luna tool trajectories expanded AIR's raw tokens to 3.17× Direct; the thin Host did not trigger a bounded repair when Kea and Termenv exposed evidence gaps; and routing does not yet choose Direct from predicted convergence time. The next iteration should add a short-task Direct admission gate, Luna wall-time/tool-cycle budgets with early exit, and capped Sol review only when tests fail or evidence is incomplete. Parallelism should remain limited to genuinely independent workstreams. These are hypotheses derived from this sample, not implemented or proven v1.1 gains.
+
 ## Core routing and projected savings
 
 The table below uses an “all work performed by Sol” baseline of `1.00×`. Model token shares total 100%. `Orchestration overhead` represents additional planning, review, coordination, and necessary rework as a fraction of the all-Sol baseline. Lean AIR targets at least 70% of model tokens on Luna and at most 30% on Sol.
 
 | Scenario | Example token routing | Orchestration overhead | Projected saving |
 | --- | --- | ---: | ---: |
-| **Ordinary clear project** | Sol 10% · Terra 20% · Luna 70% | 3%–7% | **72.2%–76.2%** |
-| **Mixed project** | Sol 20% · Terra 40% · Luna 40% | 2%–12% | **50.4%–60.4%** |
-| **Complex project** | Sol 25% · Terra 60% · Luna 15% | 7%–17% | **33.4%–43.4%** |
+| **Ordinary clear project** | Sol 10% · Terra 20% · Luna 70% | 3%–7% | **69.5%–73.5%** |
+| **Mixed project** | Sol 20% · Terra 40% · Luna 40% | 2%–12% | **46.0%–56.0%** |
+| **Complex project** | Sol 25% · Terra 60% · Luna 15% | 7%–17% | **27.2%–37.2%** |
 | **Direct small task** | The current Codex completes it without delegation | 0% | **0% routing saving** |
 
 These ranges are `scenario_model_projection` values based on public Codex token credits and example token shares. They are for budget planning, **not per-task guarantees or latency promises**.
@@ -114,7 +141,7 @@ The cost strategy is straightforward:
 
 > **Let Luna own ordinary diagnosis, implementation, testing, and coordination; reserve Sol for critical risk and necessary compact review.**
 
-Using the official short-context API prices checked on **2026-08-22**, relative costs vary by token type:
+Using the official short-context API prices checked on **2026-08-24**, relative costs vary by token type:
 
 | Model | Relative cost | Responsibility in this project |
 | --- | ---: | --- |
@@ -167,7 +194,7 @@ pinned defaults alongside future model configuration changes.
 
 A defensible public claim is therefore:
 
-> **Ordinary clear projects can project roughly 72%–76% savings, typical mixed projects roughly 50%–60%, and complex projects roughly 33%–43%; actual results must be recalculated from real routing and token usage.**
+> **Ordinary clear projects can project roughly 70%–74% savings, typical mixed projects roughly 46%–56%, and complex projects roughly 27%–37%; actual results must be recalculated from real routing and token usage.**
 
 It is not accurate to compress every workload into a fixed “56% average saving.”
 
@@ -191,7 +218,7 @@ Per 1M tokens:
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-5.6 Sol | 125 credits | 12.5 credits | 750 credits |
+| GPT-5.6 Sol | 100 credits | 10 credits | 500 credits |
 | GPT-5.6 Terra | 50 credits | 5 credits | 300 credits |
 | GPT-5.6 Luna | 5 credits | 0.5 credits | 30 credits |
 
@@ -199,8 +226,8 @@ Codex token-based credits retain these relative weights:
 
 ```text
 Sol = 1.00
-Terra = 0.40
-Luna = 0.04
+Terra = 0.50
+Luna = 0.05
 ```
 
 The following formula is therefore only for credit-based scenario projections; it does not replace an API-dollar calculation:
@@ -208,8 +235,8 @@ The following formula is therefore only for credit-based scenario projections; i
 ```text
 route_cost =
   sol_share × 1.00
-  + terra_share × 0.40
-  + luna_share × 0.04
+  + terra_share × 0.50
+  + luna_share × 0.05
   + orchestration_overhead
 
 saving = 1 - route_cost
@@ -220,14 +247,14 @@ Ordinary clear project example:
 ```text
 route_cost
 = 0.10 × 1.00
-+ 0.20 × 0.40
-+ 0.70 × 0.04
++ 0.20 × 0.50
++ 0.70 × 0.05
 + 0.03–0.07
-= 0.238–0.278
+= 0.265–0.305
 
 saving
-= 1 - 0.238–0.278
-= 72.2%–76.2%
+= 1 - 0.265–0.305
+= 69.5%–73.5%
 ```
 
 API users see dollar charges; ChatGPT / Codex users usually see credits or included capacity. They are different accounting units, so API dollar savings should not be described as an identical subscription-bill saving.
@@ -236,6 +263,7 @@ Official sources:
 
 - [OpenAI model comparison](https://developers.openai.com/api/docs/models/compare)
 - [OpenAI API pricing](https://developers.openai.com/api/docs/pricing)
+- [OpenAI Codex pricing](https://learn.chatgpt.com/docs/pricing)
 - [OpenAI Codex rate card](https://help.openai.com/en/articles/20001106-codex-rate-card)
 - [OpenAI Codex Fast mode](https://developers.openai.com/codex/agent-configuration/speed)
 
@@ -446,7 +474,7 @@ See [`docs/release/runtime-surface-matrix.md`](docs/release/runtime-surface-matr
 
 ## Current status
 
-The current version is the migration build on the new repository's `main`; it does not claim a release tag that has not been created.
+The current stable version is [`v1.0.0`](https://github.com/SII-k7/codex-air/releases/tag/v1.0.0), with its release commit tracked on `main`.
 
 > **Migration:** Codex PROVE is now Codex AIR. Use `$codex-air`; `$codex-prove` remains an explicit compatibility alias. The installer transactionally migrates managed older installs, and `--restore-latest` restores the pre-upgrade state.
 
@@ -454,7 +482,7 @@ The current version is the migration build on the new repository's `main`; it do
 | --- | --- |
 | Local repository | `$codex-air` and its compatibility entry follow the Skill Creator structure contract; repository validation, transactional install/rollback, Windows script surfaces, and the full test suite cover the migration boundary |
 | Matched evaluation | Before the rename, the same architecture and Direct Sol/xhigh both passed 18/18 F2P and 139/139 P2P on a FeatureBench MLflow task; AIR's new latency settings still require an independent rerun |
-| New hard evaluation | Complete DeepSWE v1.1 is frozen: 113 long-horizon coding tasks; OpenAI reports 72.7% for Sol/max and 69.7% for Fable 5/max; no AIR A/B run has started |
+| New hard evaluation | The complete 113-task protocol remains frozen and unrun; the paired hardest-10 A/B is complete: AIR mean partial 0.8932 versus Direct 0.8943, credits 39.0%, median paired time ratio 1.267, and strict resolved 1/10 versus 2/10 |
 | Hosted CI | [POSIX workflow](https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml): Ubuntu/macOS × Python 3.11/3.13; [Windows workflow](https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml): Windows Server 2022 / `windows-latest` × Windows PowerShell 5.1 / PowerShell 7 |
 | Physical Windows install | User-reported installation success; the Windows version, install log, and runtime identity payload were not captured, so this does not establish Native Nested |
 | Pre-migration formal evidence | One Luna/max Primary and zero controller/Terra/Sol-child calls; quality matched Direct, model wall time was 2.105× Direct, and API-equivalent cost at Luna Fast rates was 0.527× Direct; the present optimization therefore targets Luna's tool trajectory |
@@ -511,6 +539,7 @@ README.en.md                   English
 - [Real-project routing samples](tests/real-project-benchmark.md)
 - [v1.0 matched A/B protocol](tests/v100-ab-benchmark.md)
 - [DeepSWE v1.1 hard coding A/B](tests/deepswe-v11-ab.md)
+- [DeepSWE v1.1 hardest-10 quantitative result](tests/deepswe-v11-hardest10-results.md)
 - [v1.0 live matched smoke evidence](tests/v100-live-smoke.md)
 - [v1.0 evidence-first implementation report](CODEX_AIR_V1_IMPLEMENTATION_REPORT.md)
 - [migration history](CODEX_AIR_MIGRATION_REPORT.md)

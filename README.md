@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml"><img alt="POSIX CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/posix-validation.yml?branch=main&amp;label=POSIX&amp;style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml"><img alt="Windows CI" src="https://img.shields.io/github/actions/workflow/status/SII-k7/codex-air/windows-validation.yml?branch=main&amp;label=Windows&amp;style=flat-square"></a>
+  <a href="https://github.com/SII-k7/codex-air/releases/tag/v1.0.0"><img alt="release v1.0.0" src="https://img.shields.io/badge/release-v1.0.0-2563eb?style=flat-square"></a>
   <a href="LICENSE"><img alt="Apache-2.0 License" src="https://img.shields.io/github/license/SII-k7/codex-air?style=flat-square"></a>
   <a href="https://github.com/SII-k7/codex-air/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/SII-k7/codex-air?style=flat-square"></a>
 </p>
@@ -31,15 +32,41 @@ Codex AIR 现在是**仅显式触发**：只有当请求中包含 `$codex-air` �
 
 项目仓库：[SII-k7/codex-air](https://github.com/SII-k7/codex-air)。Codex AIR 由 SII-k7 独立设计和维护，不代表 OpenAI 官方产品或背书；`$codex-prove` 仅是旧命令的兼容入口。
 
+## v1.0.0 定量评测结论
+
+2026-08-23 完成了 DeepSWE v1.1 hardest-10 配对 A/B：10 道困难代码任务分别运行一次 Direct Sol/xhigh/Standard 与 Codex AIR（Sol/xhigh/Standard 薄 Host + Luna/max/Fast Primary），共 20 个有效单元，使用冻结任务顺序、同一 OCI 镜像与隐藏 verifier，并以 4 路并发执行。
+
+| 指标 | Direct Sol/xhigh | Codex AIR | 定量结论 |
+| --- | ---: | ---: | --- |
+| 严格 resolved | 2/10 | 1/10 | AIR 少 1 题，严格质量门槛未通过 |
+| 平均 partial | 0.8943 | 0.8932 | 几乎持平，差 0.0011 |
+| 单题耗时中位数 | 20.3 分钟 | 23.2 分钟 | AIR 慢 14.4% |
+| 配对耗时比中位数 | 1.000× | 1.267× | AIR 在 9/10 题更慢 |
+| Pro credits | 919.34 | 358.83 | AIR 为 Direct 的 **39.0%**，节省 **61.0%** |
+| 记录的 input + output tokens | 56,005,220 | 177,272,916 | AIR 使用约 **3.17×** token |
+
+逐题 partial 为 AIR 4 胜、4 平、2 负；AIR 在 10/10 题更便宜，8/10 题不超过 Direct 一半，但只在 1/10 题更快。最强正例是 SQLFmt：AIR partial 更高、成本仅为 Direct 的 17.2%、耗时少 32.6%；主要缺口是 Kea 的 Direct 严格通过而 AIR 未通过，以及 Termenv 的 AIR partial 低 0.0246。
+
+因此，v1.0.0 的准确结论是：
+
+- **成本目标通过：**聚合成本明显低于一半，Luna 确实接过了主要工作；
+- **严格质量非劣性尚未建立：**平均 partial 几乎相同，但 10 题单次样本中 resolved 少 1 题；
+- **速度目标未通过：**AIR 的配对典型耗时高 26.7%；
+- **省的是价格而不是 token：**AIR 用更多廉价且高缓存命中的 Luna token 换取较低 credits。
+
+有效 A/B 消耗 1,278.17 credits；保守计入 25.88 credits 的作废基础设施批次后总计 1,304.05，低于 1,800 上限。4 路并发墙钟时间为 2 小时 12 分 47 秒。完整逐题表、运行边界与 verifier 修正说明见 [DeepSWE v1.1 hardest-10 结果](tests/deepswe-v11-hardest10-results.md)。这是 10 题、每个 arm 单次尝试的定性压力测试，不是统计意义上的非劣性证明。
+
+这次结果也给出了明确的 v1.1 优化信号：固定编排对短任务的启动成本过高；Luna 工具轨迹使 AIR 的原始 token 膨胀到 3.17 倍；薄 Host 没有在 Kea、Termenv 暴露证据缺口时触发有界修复；路由尚未根据任务的预计收敛时间动态选择 Direct。下一步应加入短任务 Direct 准入门、Luna 墙钟/工具轮次预算与早停，以及只在测试失败或证据不足时触发的有上限 Sol 审查。并行仍只用于真正独立的 workstream。以上是由本次样本导出的待验证假设，不是已经实现或已证明的 v1.1 收益。
+
 ## 核心路由与预计节省
 
 下表以“同一任务全部使用 Sol”为 `1.00×` 基线。三个模型的 token 份额合计为 100%，`编排开销`表示额外的规划、审核、协调和必要返工，相对于全 Sol 基线增加的成本。Lean AIR 的运行目标是 Luna 至少承担 70% token、Sol 不超过 30%。
 
 | 场景 | 示例 token 路由 | 编排开销 | 预计节省 |
 | --- | --- | ---: | ---: |
-| **普通明确型项目** | Sol 10% · Terra 20% · Luna 70% | 3%–7% | **72.2%–76.2%** |
-| **混合型项目** | Sol 20% · Terra 40% · Luna 40% | 2%–12% | **50.4%–60.4%** |
-| **复杂型项目** | Sol 25% · Terra 60% · Luna 15% | 7%–17% | **33.4%–43.4%** |
+| **普通明确型项目** | Sol 10% · Terra 20% · Luna 70% | 3%–7% | **69.5%–73.5%** |
+| **混合型项目** | Sol 20% · Terra 40% · Luna 40% | 2%–12% | **46.0%–56.0%** |
+| **复杂型项目** | Sol 25% · Terra 60% · Luna 15% | 7%–17% | **27.2%–37.2%** |
 | **Direct 小任务** | 当前 Codex 直接完成，不委派 | 0% | **路由节省 0%** |
 
 这些区间是基于公开的 Codex token credits 和示例 token 份额的 `scenario_model_projection`，用于预算规划，**不是每个任务的保证，也不代表一定更快**。
@@ -114,7 +141,7 @@ Codex AIR 的节省逻辑很直接：
 
 > **让 Luna 承担普通任务的诊断、实现、测试与普通协调；只把关键风险和必要的紧凑审查留给 Sol。**
 
-按 **2026-08-22** 的官方短上下文 API 价格，不同 token 类型的相对成本为：
+按 **2026-08-24** 的官方短上下文 API 价格，不同 token 类型的相对成本为：
 
 | 模型 | 相对成本 | 在本项目中的职责 |
 | --- | ---: | --- |
@@ -159,7 +186,7 @@ Sol/Terra 自定义 agent 固定 `service_tier = "default"`。这是对 Codex
 
 因此，更准确的公开说法是：
 
-> **普通明确型项目可投影节省约 72%–76%，典型混合项目约 50%–60%，复杂项目约 33%–43%；实际结果必须按真实路由和 token 使用复算。**
+> **普通明确型项目可投影节省约 70%–74%，典型混合项目约 46%–56%，复杂项目约 27%–37%；实际结果必须按真实路由和 token 使用复算。**
 
 而不是把所有任务概括成一个固定的“平均节省 56%”。
 
@@ -183,7 +210,7 @@ Sol/Terra 自定义 agent 固定 `service_tier = "default"`。这是对 Codex
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-5.6 Sol | 125 credits | 12.5 credits | 750 credits |
+| GPT-5.6 Sol | 100 credits | 10 credits | 500 credits |
 | GPT-5.6 Terra | 50 credits | 5 credits | 300 credits |
 | GPT-5.6 Luna | 5 credits | 0.5 credits | 30 credits |
 
@@ -191,8 +218,8 @@ Codex token-based credits 的相对权重仍为：
 
 ```text
 Sol = 1.00
-Terra = 0.40
-Luna = 0.04
+Terra = 0.50
+Luna = 0.05
 ```
 
 因此下列公式只用于 credits 场景投影，不能直接代替 API 美元计算：
@@ -200,8 +227,8 @@ Luna = 0.04
 ```text
 route_cost =
   sol_share × 1.00
-  + terra_share × 0.40
-  + luna_share × 0.04
+  + terra_share × 0.50
+  + luna_share × 0.05
   + orchestration_overhead
 
 saving = 1 - route_cost
@@ -212,14 +239,14 @@ saving = 1 - route_cost
 ```text
 route_cost
 = 0.10 × 1.00
-+ 0.20 × 0.40
-+ 0.70 × 0.04
++ 0.20 × 0.50
++ 0.70 × 0.05
 + 0.03–0.07
-= 0.238–0.278
+= 0.265–0.305
 
 saving
-= 1 - 0.238–0.278
-= 72.2%–76.2%
+= 1 - 0.265–0.305
+= 69.5%–73.5%
 ```
 
 API 用户看到的是美元金额；ChatGPT / Codex 用户通常看到的是 credits 或订阅容量。两者是不同计费单位，不能把 API 美元节省直接描述成订阅账单节省。
@@ -228,6 +255,7 @@ API 用户看到的是美元金额；ChatGPT / Codex 用户通常看到的是 cr
 
 - [OpenAI model comparison](https://developers.openai.com/api/docs/models/compare)
 - [OpenAI API pricing](https://developers.openai.com/api/docs/pricing)
+- [OpenAI Codex pricing](https://learn.chatgpt.com/docs/pricing)
 - [OpenAI Codex rate card](https://help.openai.com/en/articles/20001106-codex-rate-card)
 - [OpenAI Codex Fast mode](https://developers.openai.com/codex/agent-configuration/speed)
 
@@ -433,7 +461,7 @@ pwsh -NoProfile -File scripts/uninstall.ps1 -RestoreLatest
 
 ## 当前状态
 
-当前版本是新仓库 `main` 上的迁移版本，尚未冒充不存在的 release tag。
+当前稳定版本是 [`v1.0.0`](https://github.com/SII-k7/codex-air/releases/tag/v1.0.0)，发布提交由 `main` 跟踪。
 
 > **迁移说明：**Codex PROVE 已更名为 Codex AIR。新入口是 `$codex-air`；`$codex-prove` 只作为显式兼容别名。安装器可事务迁移受管旧版本，`--restore-latest` 可恢复升级前状态。
 
@@ -441,7 +469,7 @@ pwsh -NoProfile -File scripts/uninstall.ps1 -RestoreLatest
 | --- | --- |
 | 本地仓库 | `$codex-air` 与兼容入口符合 Skill Creator 结构契约；仓库静态验证、事务安装/回滚、Windows 脚本表面与完整测试套件共同覆盖迁移边界 |
 | 匹配评测 | 改名前的相同架构在 FeatureBench MLflow 任务上与 Direct Sol/xhigh 都通过 18/18 F2P 和 139/139 P2P；AIR 的新低延迟配置尚待独立复测 |
-| 新困难评测 | 已冻结完整 DeepSWE v1.1：113 个长时程真实代码任务；OpenAI 公布的 Sol/max 为 72.7%、Fable 5/max 为 69.7%，尚未启动 AIR A/B |
+| 新困难评测 | 完整 113 题协议仍保持冻结、尚未运行；已完成 hardest-10 配对 A/B：AIR 平均 partial 0.8932 对 Direct 0.8943，credits 为 39.0%，配对耗时比中位数为 1.267，严格 resolved 为 1/10 对 2/10 |
 | 托管 CI | [POSIX 工作流](https://github.com/SII-k7/codex-air/actions/workflows/posix-validation.yml)：Ubuntu/macOS × Python 3.11/3.13；[Windows 工作流](https://github.com/SII-k7/codex-air/actions/workflows/windows-validation.yml)：Windows Server 2022 / `windows-latest` × Windows PowerShell 5.1 / PowerShell 7 |
 | Windows 实机安装 | 用户报告安装成功；未收集 Windows 版本、安装日志或运行时身份载荷，因此不扩展为 Native Nested 证明 |
 | 迁移前正式运行证据 | 单一 Luna/max Primary、零 Controller/Terra/Sol child；质量与 Direct 持平，模型用时为 Direct 的 2.105×，按 Luna Fast 价格折算的 API 等价成本为 Direct 的 0.527×；因此当前优化重点是缩短 Luna 工具轨迹 |
@@ -498,6 +526,7 @@ README.en.md                   English
 - [真实项目路由样本](tests/real-project-benchmark.md)
 - [v1.0 匹配 A/B 协议](tests/v100-ab-benchmark.md)
 - [DeepSWE v1.1 困难代码 A/B](tests/deepswe-v11-ab.md)
+- [DeepSWE v1.1 hardest-10 定量结果](tests/deepswe-v11-hardest10-results.md)
 - [v1.0 真实匹配 smoke 证据](tests/v100-live-smoke.md)
 - [v1.0 证据优先实现报告](CODEX_AIR_V1_IMPLEMENTATION_REPORT.md)
 - [迁移历史](CODEX_AIR_MIGRATION_REPORT.md)
