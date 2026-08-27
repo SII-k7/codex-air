@@ -1,0 +1,13 @@
+* text=auto
+
+# Keep scripts, prompts, docs, and hashed fixtures byte-stable on every host.
+*.json text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.svg text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+VERSION text eol=lf

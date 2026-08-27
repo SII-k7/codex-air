@@ -313,18 +313,19 @@ class ScriptSurfaceTests(unittest.TestCase):
         self.assertIn("v050", lifecycle)
 
     def test_lifecycle_commands_expose_help_without_requiring_a_home(self) -> None:
-        for script in ("install.sh", "uninstall.sh", "doctor.sh", "default.sh"):
-            result = subprocess.run(
-                ["bash", str(SCRIPTS / script), "--help"],
-                cwd=ROOT,
-                env={**os.environ, "ORCHESTRATE_HOME": ""},
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                check=False,
-            )
-            self.assertEqual(0, result.returncode, result.stdout)
-            self.assertIn("Usage:", result.stdout)
+        if os.name != "nt":
+            for script in ("install.sh", "uninstall.sh", "doctor.sh", "default.sh"):
+                result = subprocess.run(
+                    ["bash", str(SCRIPTS / script), "--help"],
+                    cwd=ROOT,
+                    env={**os.environ, "ORCHESTRATE_HOME": ""},
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    check=False,
+                )
+                self.assertEqual(0, result.returncode, result.stdout)
+                self.assertIn("Usage:", result.stdout)
 
         for script in ("install.ps1", "uninstall.ps1", "doctor.ps1", "default.ps1"):
             text = (SCRIPTS / script).read_text(encoding="utf-8")

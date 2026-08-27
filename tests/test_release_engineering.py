@@ -147,6 +147,11 @@ class ReleaseEngineeringTests(unittest.TestCase):
         self.assertIn('bash -n "$script"', workflow)
         self.assertNotIn("bash -n scripts/*.sh\n", workflow)
 
+    def test_contract_text_has_platform_stable_line_endings(self) -> None:
+        attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
+        for pattern in ("*.json", "*.md", "*.ps1", "*.py", "*.sh", "*.toml"):
+            self.assertIn(f"{pattern} text eol=lf", attributes)
+
     def test_workflows_pin_actions_and_cover_release_matrix(self) -> None:
         expected = {
             "actions/checkout": "11d5960a326750d5838078e36cf38b85af677262",
