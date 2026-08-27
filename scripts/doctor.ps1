@@ -133,7 +133,7 @@ else {
 
 $sourceCommit = "unknown"
 $sourceDirty = $null
-$gitCommand = Get-Command git -CommandType Application -ErrorAction SilentlyContinue
+$gitCommand = Get-Command git -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($null -ne $gitCommand) {
     $commitOutput = @(& $gitCommand.Source -C $repoRoot rev-parse --verify HEAD 2>$null)
     if ($LASTEXITCODE -eq 0) {

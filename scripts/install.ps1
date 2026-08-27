@@ -172,7 +172,7 @@ $releaseVersion = (Get-Content -LiteralPath $versionSource -Raw).Trim()
 if ($releaseVersion -notmatch "^[0-9A-Za-z][0-9A-Za-z.+-]{0,63}$") { throw "the source release version is invalid" }
 $sourceCommit = "unknown"
 $sourceDirty = "unknown"
-$gitCommand = Get-Command git -CommandType Application -ErrorAction SilentlyContinue
+$gitCommand = Get-Command git -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($null -ne $gitCommand) {
     $commitOutput = @(& $gitCommand.Source -C $repoRoot rev-parse --verify HEAD 2>$null)
     if ($LASTEXITCODE -eq 0) {

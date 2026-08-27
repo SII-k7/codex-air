@@ -94,6 +94,12 @@ class PosixDoctorTests(unittest.TestCase):
 
 
 class PowerShellDoctorSurfaceTests(unittest.TestCase):
+    def test_git_command_resolution_selects_one_application(self) -> None:
+        pattern = r"(?m)^\$gitCommand = Get-Command git .*\| Select-Object -First 1$"
+        for script in ("install.ps1", "doctor.ps1"):
+            text = (SCRIPTS / script).read_text(encoding="utf-8")
+            self.assertRegex(text, pattern, script)
+
     def test_windows_entrypoints_have_native_parity_and_redacted_json(self) -> None:
         doctor = (SCRIPTS / "doctor.ps1").read_text(encoding="utf-8")
         default = (SCRIPTS / "default.ps1").read_text(encoding="utf-8")
