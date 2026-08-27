@@ -16,6 +16,7 @@ ASSETS = (
     ASSET_ROOT / "control-plane-zh.svg",
     ASSET_ROOT / "control-plane-en.svg",
 )
+HEROES = ASSETS[:2]
 
 
 class ControlOrbitAssetContractTests(unittest.TestCase):
@@ -37,6 +38,16 @@ class ControlOrbitAssetContractTests(unittest.TestCase):
             self.assertIn("Luna", source, path.name)
             self.assertNotIn("Luna Primary", source, path.name)
             self.assertNotIn("LEAN PRIMARY", source, path.name)
+
+    def test_hero_copy_is_architectural_not_a_performance_claim(self) -> None:
+        for path in HEROES:
+            source = path.read_text(encoding="utf-8")
+            for marker in ("≤55%", "55%", "cost target", "目标成本", "half the cost", "成本减半"):
+                self.assertNotIn(marker, source, path.name)
+            self.assertIn("TERRA = 0", source, path.name)
+
+        self.assertIn("ONE EXECUTOR BY DEFAULT", HEROES[1].read_text(encoding="utf-8"))
+        self.assertIn("默认单执行器", HEROES[0].read_text(encoding="utf-8"))
 
     def test_orbit_paths_return_to_the_single_controller(self) -> None:
         for path in ASSETS:

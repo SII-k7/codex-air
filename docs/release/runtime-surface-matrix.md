@@ -1,65 +1,76 @@
-# Runtime surface matrix
+# Runtime evidence matrix
 
-Release-time evidence for Codex AIR. Configuration, an agent label, or a child
-self-report is not runtime proof. Statuses are `VERIFIED`, `FAILED`,
-`UNVERIFIED`, or `RETAINED HISTORICAL`.
+This page records what the Codex AIR v1.2 candidate has actually demonstrated.
+Configuration, an agent label, a child self-report, or an unfinished candidate
+is not runtime or benchmark proof.
 
-Candidate date: 2026-08-24
+Statuses used here are `VERIFIED`, `UNVERIFIED`, `NOT RUN`,
+`BUDGET_ABORTED / INVALID`, and `RETAINED HISTORICAL`.
 
-## Optimized fork profile
+Candidate date: 2026-08-27
 
-| Surface | Signal | Status | Evidence location | Date |
-| --- | --- | --- | --- | --- |
-| Local repository | five agent TOMLs, canonical and compatibility Skills, validators | VERIFIED | `bash scripts/test.sh` passed 94 tests; Skill Creator `quick_validate.py` passed both Skill entries | 2026-08-24 |
-| POSIX-compatible shell simulation | install, doctor, rollback, uninstall, managed v5/v6-to-v7 upgrade and restore | VERIFIED | Isolated HOME lifecycle tests passed for fresh installs and both legacy migration families | 2026-08-22 |
-| Native Ubuntu/macOS CI | validation and complete unittest lifecycle | VERIFIED | Single-contributor `main` run [32564633665](https://github.com/SII-k7/codex-air/actions/runs/32564633665), Ubuntu and macOS with Python 3.11 and 3.13 | 2026-08-22 |
-| Windows PowerShell | install, rollback, uninstall | VERIFIED | Local Windows PowerShell 5.1 lifecycle contract passed | 2026-08-21 |
-| Native Windows CI | validation and complete install lifecycle | VERIFIED | Single-contributor `main` run [32564633619](https://github.com/SII-k7/codex-air/actions/runs/32564633619), Windows Server 2022 and `windows-latest`, Windows PowerShell and PowerShell 7 | 2026-08-22 |
-| Ubuntu Codex CLI | installed Skill discovery and `air-efficient-worker` selection | VERIFIED | Fresh root session `01a0247f-7a8a-7250-b6ac-0d0810edafc6` launched child `01a0247f-c7db-7c80-8630-4752ff1433ed`; remaining four custom selections were not exercised | 2026-08-21 |
-| Sol control profiles | `air-controller`, `air-critical-controller`, and exceptional `air-challenger` pin Sol/xhigh/Standard | UNVERIFIED | Static configuration and validators prove requested profiles, not authoritative live model selection | 2026-08-24 |
-| Luna execution profiles | efficient and complex executors both pin Luna/max/Fast with low-output and no-nesting guards | UNVERIFIED | Static configuration proves requested tier; actual Fast response tier and matched runtime remain unobserved | 2026-08-24 |
-| Controlled AIR route | current Sol/xhigh Host or one fallback Sol controller explores and plans; one Luna executor implements; the same Sol reviews | UNVERIFIED | v1.1 static contract is complete; no matched end-to-end v1.1 runtime record yet | 2026-08-24 |
-| Parallel AIR route | Sol admits only ≥65% parallelizable work with ≤60% largest branch and ≤15% coordination; 2–3 Luna executors run one batch | UNVERIFIED | Static contract exists; no authoritative v1.1 Sol-to-parallel-Luna run has been captured | 2026-08-24 |
-| Hard quality benchmark | DeepSWE v1.1 hardest-10 paired A/B | RETAINED HISTORICAL | v1.0 AIR achieved mean partial 0.8932 vs 0.8943, 39.0% credits, 1.267 median paired time ratio, and 1/10 vs 2/10 strict resolved; v1.1 has not been rerun | 2026-08-23 |
+## Current v1.2 static contract
 
-The rows below are retained upstream v1.0 evidence. They do not prove the v1.1
-Sol-control/Luna-execution route, changed efforts, or actual Fast tier.
+| Surface | Status | Proven evidence | Boundary |
+| --- | --- | --- | --- |
+| Canonical and compatibility Skills | VERIFIED | Source validation covers valid frontmatter, explicit-only invocation, maintained references, and the compatibility redirect | Static evidence does not prove a model launch |
+| Sol control profiles | VERIFIED | Controller, critical-controller, and optional challenger profiles request Sol with `xhigh` reasoning and the standard service tier | The active Host must still prove the model and tier selected at runtime |
+| Luna execution profiles | VERIFIED | Efficient and complex worker profiles request Luna with `max` reasoning, Fast mode, low-output settings, and worker nesting disabled | The actual Fast response tier remains unobserved |
+| Current model boundary | VERIFIED | Static validation rejects Terra and requires the two Luna worker profiles; Terra is not a current AIR route | This is a source contract, not evidence that a live run honored it |
+| Routing and ownership contract | VERIFIED | One Sol semantic controller owns planning and final review; bounded Luna workers receive explicit write scopes, evidence requirements, and one-file ownership | No static check establishes task quality, latency, or cost |
+| Installation lifecycle | VERIFIED | Isolated lifecycle checks cover managed install, upgrade, rollback, restore, and uninstall behavior | A fresh v1.2 hosted cross-platform release run is recorded separately when available |
 
-## Retained upstream v1.0 model-neutral roles
+These rows verify the repository contract. They do not establish runtime model
+identity, actual service tier, benchmark quality, or a cost/latency advantage.
 
-| Surface | Signal | Status | Evidence location | Date |
-| --- | --- | --- | --- | --- |
-| Desktop | `air-controller` selection | VERIFIED | Fresh session `01a01e7c-477a-7a03-9b74-8a7144d6f958`; Host launch plus two-turn handshake and final review | 2026-08-20 |
-| Desktop | `air-complex-worker` selection | VERIFIED | Same fresh session; Host launch plus two-turn handshake | 2026-08-20 |
-| Desktop | `air-efficient-worker` selection | VERIFIED | Same fresh session; Host launch plus two-turn handshake | 2026-08-20 |
-| Desktop | exact models and reasoning | VERIFIED | Host/tool mapping and parent launch records: Sol/high, Terra/high, Luna/max | 2026-08-20 |
-| Desktop | Native Nested | UNVERIFIED | Requires a real controller-to-worker launch with the new role names | 2026-08-20 |
-| Desktop | Compatibility | VERIFIED | Fresh session `01a01e7c-477a-7a03-9b74-8a7144d6f958`; Controller plan, Host worker dispatch, same-Controller final verdict `PASS` | 2026-08-20 |
-| Desktop | fresh-session Skill discovery | RETAINED HISTORICAL | Pre-AIR session `01a01e81-92bc-7462-bb95-450bc929e971` exercised the former `$codex-prove` entry; the current compatibility entry redirects `$codex-prove` to `$codex-air` and is covered structurally | 2026-08-22 |
-| Desktop | transactional global install | VERIFIED | Persistent backup `/Users/kin3/.codex/codex-air/backups/20260820T092316Z-61245`; installed canonical Skill, alias, and three roles | 2026-08-20 |
-| POSIX CI | validation and lifecycle | VERIFIED | `main` run [32353507136](https://github.com/SII-k7/codex-air/actions/runs/32353507136) | 2026-08-20 |
-| Windows CI | install/upgrade/rollback/uninstall | VERIFIED | `main` run [32353507150](https://github.com/SII-k7/codex-air/actions/runs/32353507150), Windows Server 2022 and `windows-latest`, PowerShell 5.1 and 7 | 2026-08-20 |
-| Physical Windows 11 | Native Nested | UNVERIFIED | No v1.0 physical-device runtime payload captured | 2026-08-20 |
+## Current v1.2 runtime and evaluation
 
-Update this table only from actual launch, result, lifecycle, or CI evidence.
+| Surface | Status | Evidence | Conclusion boundary |
+| --- | --- | --- | --- |
+| Exact current-role model selection | UNVERIFIED | No privacy-safe authoritative v1.2 launch record has been retained | TOML values and child statements are insufficient |
+| Native Nested with current roles | UNVERIFIED | No complete current-role controller-to-worker-to-controller record has been retained | Compatibility or static routing tests do not prove nesting |
+| Two-task low-credit screen | BUDGET_ABORTED / INVALID | The budget guard stopped the run before both cells produced terminal Luna records and Sol final reviews | Candidate files and partial telemetry are diagnostic only; the published comparisons are not accepted score evidence or proof of parity |
+| Low-credit confirmation stage | NOT RUN | The invalid screen could not open the confirmation gate | No confirm-stage conclusion exists |
+| v1.2 DeepSWE hardest-10 matched A/B | NOT RUN | No v1.2 hardest-10 cells have been executed | There is no v1.2 hardest-10 quality, cost, or latency result |
 
-## Retained v0.5 historical evidence
+The low-credit protocol and its fail-closed scoring rules are documented in the
+[staged microbenchmark protocol](../../tests/deepswe-v11-microbench.md). The
+two-task attempt is classified `BUDGET_ABORTED / INVALID`: its diagnostic
+ratios cannot support a claim that v1.2 preserves quality, matches elapsed
+time, or reduces cost in completed work.
 
-The previous model-branded release verified the following on 2026-08-17:
+## Historical evidence, not v1.2 proof
 
-- Desktop Host/tool mapping selected `sol-controller`, `terra-high-worker`, and
-  `luna-max-worker` with `fork_turns="none"` and the configured model/effort.
-- `sol-controller` launched two independent Terra audits, one bounded Luna
-  smoke, and one qualifying read-only challenge.
-- Host-owned baseline/final snapshots bound changed paths and artifacts before
-  the final review.
-- A separate `codex exec` Native Nested path proved Sol-to-Luna dispatch and a
-  structured worker result.
+| Evidence | Status | Historical observation | Current boundary |
+| --- | --- | --- | --- |
+| v1.0 DeepSWE hardest-10 matched A/B | RETAINED HISTORICAL | Direct resolved 2/10 and AIR resolved 1/10; mean partial scores were 0.8943 and 0.8932; AIR used 358.83 credits versus 919.34; median paired time ratio was 1.267 | This predecessor result does not establish quality equivalence and has not been reproduced by v1.2 |
+| v1.0 routing/runtime evidence | RETAINED HISTORICAL | Earlier role selection and compatibility evidence informed later contract tests | Earlier model assignments and routing are not current v1.2 evidence |
+| Earlier install and CI evidence | RETAINED HISTORICAL | Previous releases exercised POSIX and Windows lifecycle paths | Historical CI does not replace a release-specific v1.2 run |
 
-This evidence supports continuity of the protocol, but it does not prove the new
-`air-*` agent names. The v1.0 release must capture a fresh runtime record.
+The complete historical benchmark is preserved in
+[DeepSWE hardest-10 results](../../tests/deepswe-v11-hardest10-results.md).
+Its ten one-attempt tasks are useful engineering evidence, but they are not a
+statistical non-inferiority result or proof of quality equivalence.
 
-The matched protocol and retained smoke are documented in
-[`tests/v100-ab-benchmark.md`](../../tests/v100-ab-benchmark.md) and
-[`tests/v100-live-smoke.md`](../../tests/v100-live-smoke.md). The smoke remains a
-single historical pair and does not replace the unfinished full benchmark.
+Older protocol and smoke records remain available in
+[the v1.0 A/B protocol](../../tests/v100-ab-benchmark.md) and
+[the v1.0 live smoke](../../tests/v100-live-smoke.md). They are historical only;
+old model-branded routing is deliberately excluded from the current matrix.
+
+## Evidence update rules
+
+- Do not publish local usernames, machine paths, session identifiers, prompts,
+  credentials, or private task details.
+- Mark a budget-aborted or incomplete cell `INVALID`, even when it produced a
+  plausible worktree candidate or partial telemetry.
+- Mark exact runtime model and service-tier claims `VERIFIED` only from
+  authoritative Host evidence retained in a privacy-safe form.
+- Bind benchmark claims to complete runner output, hidden grading, candidate
+  identity, and the frozen scoring protocol.
+- Do not claim quality equivalence from a close mean, a partial run, or a small
+  historical sample.
+- Do not publish a fixed test count as enduring release evidence; cite the
+  reproducible validation command instead.
+
+Update this matrix only when the evidence class and its limitations remain
+explicit.

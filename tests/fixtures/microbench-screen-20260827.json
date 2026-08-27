@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "evidence_class": "budget_aborted_diagnostic",
+  "status": "BUDGET_ABORTED",
+  "observed_at": "2026-08-27",
+  "claim_boundary": "The cells were interrupted before terminal Luna records and Sol final review. They are invalid and unscored under the frozen microbenchmark contract; verifier output is diagnostic only.",
+  "protocol_manifest_sha256": "d4a7cac902433cda812c371791c6b675c33c353956ab53efbd3a386e6acdaa84",
+  "candidate": {
+    "repo_commit": "b83affa856c66599fb449a2dcfc054b024b10693",
+    "skill_sha256": "c0a2b232fdff33dfa2b54b7702657c9910a0eac0592f313faa0f9b3503b15ad7",
+    "agent_bundle_sha256": "a2a29ea0dd1a792ccc974696aaa832cafe2e453b55c02332a513924d96fcbede",
+    "codex_cli": "0.149.0",
+    "controller": "gpt-5.6-sol / xhigh / Standard",
+    "worker": "gpt-5.6-luna / max / Fast requested",
+    "actual_fast_tier": "unobserved",
+    "terra_calls": 0,
+    "terra_tokens": 0
+  },
+  "budget": {
+    "screen_credit_cap": 70,
+    "credits_at_stop": 66.84759,
+    "automatic_retries": 0,
+    "confirm_stage_launched": false
+  },
+  "cells": [
+    {
+      "task_id": "sqlfmt-create-table-ddl-formatting",
+      "valid": false,
+      "agent_exit_code": -2,
+      "terminal_luna_record": false,
+      "sol_final_review": false,
+      "elapsed_seconds": 1604.3826092540985,
+      "tool_calls": 102,
+      "short_polls": 0,
+      "patch_sha256": "bbab62941d38c8f21d471eb1c61ea63ed65f102605cab155f59238525a220ec3",
+      "historical_direct": {
+        "resolved": 0,
+        "partial": 0.9938697318007663,
+        "elapsed_seconds": 1548.0682400459773,
+        "pro_credits": 110.22572
+      },
+      "diagnostic_verifier": {
+        "resolved": 0,
+        "partial": 0.9946360153256705,
+        "f2p_passed": 27,
+        "f2p_total": 32,
+        "p2p_passed": 1271,
+        "p2p_total": 1273,
+        "offline_rerun_after_interrupt": true
+      },
+      "usage_by_model": {
+        "gpt-5.6-sol": {
+          "input_tokens": 550839,
+          "cached_input_tokens": 469760,
+          "output_tokens": 9516,
+          "pro_credits": 17.5635
+        },
+        "gpt-5.6-luna": {
+          "input_tokens": 12336805,
+          "cached_input_tokens": 12123648,
+          "output_tokens": 54950,
+          "pro_credits": 21.9402725
+        }
+      },
+      "pro_credits": 39.5037725
+    },
+    {
+      "task_id": "termenv-preserve-ansi-resets",
+      "valid": false,
+      "agent_exit_code": -2,
+      "terminal_luna_record": false,
+      "sol_final_review": false,
+      "elapsed_seconds": 1604.3909052029485,
+      "tool_calls": 68,
+      "short_polls": 0,
+      "patch_sha256": "bd8566825c088bfd0f3c33ec1b669f5af5c5ccab1f33d5617531aebada62bcf5",
+      "historical_direct": {
+        "resolved": 0,
+        "partial": 0.9672131147540983,
+        "elapsed_seconds": 1179.1803725860082,
+        "pro_credits": 58.23672
+      },
+      "diagnostic_verifier": {
+        "resolved": 0,
+        "partial": 0.9754098360655737,
+        "f2p_passed": 32,
+        "f2p_total": 35,
+        "p2p_passed": 87,
+        "p2p_total": 87,
+        "offline_rerun_after_interrupt": false
+      },
+      "usage_by_model": {
+        "gpt-5.6-sol": {
+          "input_tokens": 308399,
+          "cached_input_tokens": 236032,
+          "output_tokens": 7965,
+          "pro_credits": 13.57952
+        },
+        "gpt-5.6-luna": {
+          "input_tokens": 5626627,
+          "cached_input_tokens": 5465088,
+          "output_tokens": 65516,
+          "pro_credits": 13.7642975
+        }
+      },
+      "pro_credits": 27.3438175
+    }
+  ],
+  "aggregate_diagnostic": {
+    "historical_direct_credits": 168.46244,
+    "candidate_credits": 66.84759,
+    "cost_ratio": 0.39681005451422885,
+    "mean_partial_delta": 0.004481502418189787,
+    "min_task_partial_delta": 0.0007662835249041544,
+    "median_time_ratio": 1.1984877841631127,
+    "luna_token_share": 0.9537610511303509,
+    "tool_calls": 170,
+    "short_polls": 0,
+    "failed_conditions": [
+      "valid_terminal_completion",
+      "median_time_ratio",
+      "tool_calls"
+    ]
+  }
+}

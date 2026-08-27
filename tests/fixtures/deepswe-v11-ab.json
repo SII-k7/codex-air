@@ -1,7 +1,10 @@
 {
   "benchmark": "Codex AIR DeepSWE v1.1 full A/B",
   "frozen_at": "2026-08-22T17:15:18+08:00",
+  "protocol_updated_at": "2026-08-27T00:00:00+08:00",
   "status": "FROZEN_NOT_RUN",
+  "evidence_class": "prospective_protocol_only",
+  "architecture_version": "1.2",
   "source": {
     "repository": "https://github.com/datacurve-ai/deep-swe",
     "git_sha": "435ee89ec2f2e2289f33b0da4f992f0b7b7266b9",
@@ -31,8 +34,10 @@
     "arm_order": "Counterbalance per task from SHA256('codex-air-deepswe-v11:' + task_id)."
   },
   "arms": {
-    "direct": "gpt-5.6-sol / max / default with the official agent-visible task prompt and no AIR invocation",
-    "air": "same root model, max effort, default tier, task prompt, timeout, environment, and tool boundary, explicitly invoking $codex-air; Luna children remain max / fast",
+    "direct": "gpt-5.6-sol / xhigh / default with the official agent-visible task prompt and no AIR invocation",
+    "air": "one gpt-5.6-sol / xhigh / default semantic controller explicitly invoking $codex-air; one gpt-5.6-luna / max worker with Fast requested by default; two or three Luna workers only after the quantitative parallel gate",
+    "review": "the same Sol controller reviews the final candidate; Luna cannot approve overall completion; no routine challenger",
+    "terra": "zero calls and zero tokens",
     "run_cap": "Use the task's pinned resource limits; record any harness-level cap identically for both arms"
   },
   "scoring": {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cross-surface routing invariants for the v1.1 hybrid architecture."""
+"""Cross-surface routing invariants for the v1.2 hybrid architecture."""
 
 from __future__ import annotations
 
@@ -36,48 +36,52 @@ class RoutingInvariantTests(unittest.TestCase):
                 SKILL / "references" / "runtime-notes.md",
             )
         )
+        cls.normalized = " ".join(cls.text.split())
 
     def test_architecture_has_only_sol_control_and_luna_execution(self) -> None:
         self.assertIn("Sol xhigh", self.text)
-        self.assertIn("Luna Max Fast", self.text)
+        self.assertIn("Luna Max", self.text)
+        self.assertIn("Fast requested", self.text)
         self.assertIn("Terra is forbidden", self.text)
         self.assertIn("Terra has no AIR role", self.text)
 
-    def test_current_host_reuse_avoids_a_second_sol_context(self) -> None:
-        self.assertIn("Prefer the current Host", self.text)
-        self.assertIn("current conversation", self.text)
-        self.assertIn("avoids paying for a second Sol context", self.text)
+    def test_current_host_reuse_requires_exact_sol_profile(self) -> None:
+        self.assertIn("Reuse the Host only", self.normalized)
+        self.assertIn("exact `gpt-5.6-sol`, `xhigh`, and Standard requested tier", self.normalized)
+        self.assertIn("Any other proved Sol Host may transport", self.normalized)
+        self.assertIn("actual effort/tier as Sol overhead", self.normalized)
 
     def test_single_executor_is_default_and_parallelism_is_latency_gated(self) -> None:
-        self.assertIn("One Luna executor is the default", self.text)
-        self.assertIn("One executor is normal", self.text)
-        self.assertIn("critical-path time", self.text)
-        self.assertIn("quality remains non-inferior", self.text)
+        self.assertIn("One Luna executor is the default", self.normalized)
+        self.assertIn("One executor is normal", self.normalized)
+        self.assertIn("critical path", self.normalized)
+        self.assertIn("quality remains non-inferior", self.normalized)
 
     def test_complex_is_instructional_not_a_different_model_tier(self) -> None:
         efficient = load("air-efficient-worker.toml")
         complex_worker = load("air-complex-worker.toml")
         for key in ("model", "model_reasoning_effort", "service_tier"):
             self.assertEqual(efficient[key], complex_worker[key])
-        self.assertIn("same model and price", read(ROOT / "README.en.md").lower())
+        skill = " ".join(read(SKILL / "SKILL.md").lower().split())
+        self.assertIn("same luna max profile and request fast", skill)
 
     def test_native_nested_and_compatibility_preserve_one_controller(self) -> None:
         runtime = read(SKILL / "references" / "runtime-notes.md")
         self.assertIn("Native Nested", runtime)
         self.assertIn("Compatibility", runtime)
-        self.assertIn("same controller", runtime)
-        self.assertIn("must not reinterpret", runtime)
+        self.assertIn("that controller", runtime)
+        self.assertIn("must not", runtime)
 
     def test_actual_fast_tier_is_observed_not_assumed(self) -> None:
         self.assertIn("requested=fast", self.text)
         self.assertIn("unobserved", self.text)
-        self.assertIn("actual response tier", self.text)
+        self.assertIn("actual tier", self.text)
 
-    def test_sol_implementation_is_an_accounted_tiny_exception(self) -> None:
+    def test_all_air_writes_are_luna_owned_and_tiny_work_stays_direct(self) -> None:
         orchestration = " ".join(read(SKILL / "references" / "orchestration.md").split())
-        self.assertIn("Never use Sol as a routine write worker", orchestration)
-        self.assertIn("tiny integration edit", orchestration)
-        self.assertIn("record those Sol implementation tokens separately", orchestration)
+        self.assertIn("Tiny localized work stays Direct before AIR admission", orchestration)
+        self.assertIn("Every AIR write is Luna-owned", orchestration)
+        self.assertIn("Sol and Terra never implement", orchestration)
 
 
 class InstalledProfileTests(unittest.TestCase):
@@ -96,7 +100,7 @@ class InstalledProfileTests(unittest.TestCase):
     def test_fresh_install_preserves_exact_profile_bytes(self) -> None:
         if os.name == "nt":
             self.skipTest("POSIX installer; Windows byte lifecycle is covered by windows-lifecycle.ps1")
-        with tempfile.TemporaryDirectory(prefix="codex-air-v11-") as raw:
+        with tempfile.TemporaryDirectory(prefix="codex-air-v12-") as raw:
             home = Path(raw)
             result = subprocess.run(
                 ["bash", "scripts/install.sh"],

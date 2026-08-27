@@ -1,11 +1,18 @@
 #requires -Version 5.1
 [CmdletBinding()]
 param(
-    [switch]$Check
+    [switch]$Check,
+    [Alias("h", "-help")][switch]$Help
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+if ($Help) {
+    Write-Output "Usage: install.ps1 [-Check] [-Help|--help]"
+    Write-Output "Install Codex AIR transactionally, or validate a prospective install with -Check."
+    exit 0
+}
 
 function Test-PathExists {
     param([Parameter(Mandatory = $true)][string]$Path)
@@ -157,8 +164,30 @@ $criticalControllerSource = Join-Path $repoRoot ".codex/agents/air-critical-cont
 $complexSource = Join-Path $repoRoot ".codex/agents/air-complex-worker.toml"
 $efficientSource = Join-Path $repoRoot ".codex/agents/air-efficient-worker.toml"
 $challengerSource = Join-Path $repoRoot ".codex/agents/air-challenger.toml"
+$versionSource = Join-Path $repoRoot "VERSION"
 foreach ($path in @($canonicalSkillSource, $compatSkillSource)) { Assert-PlainPath $path "Directory" }
 foreach ($path in @($controllerSource, $criticalControllerSource, $complexSource, $efficientSource, $challengerSource)) { Assert-PlainPath $path "File" }
+Assert-PlainPath $versionSource "File"
+$releaseVersion = (Get-Content -LiteralPath $versionSource -Raw).Trim()
+if ($releaseVersion -notmatch "^[0-9A-Za-z][0-9A-Za-z.+-]{0,63}$") { throw "the source release version is invalid" }
+$sourceCommit = "unknown"
+$sourceDirty = "unknown"
+$gitCommand = Get-Command git -CommandType Application -ErrorAction SilentlyContinue
+if ($null -ne $gitCommand) {
+    $commitOutput = @(& $gitCommand.Source -C $repoRoot rev-parse --verify HEAD 2>$null)
+    if ($LASTEXITCODE -eq 0) {
+        $commitCandidate = (($commitOutput | ForEach-Object { [string]$_ }) -join "").Trim()
+        if ($commitCandidate -match "^[0-9a-f]{40,64}$") {
+            $sourceCommit = $commitCandidate
+            $statusOutput = @(
+                & $gitCommand.Source --no-optional-locks -C $repoRoot status --porcelain --untracked-files=normal 2>$null
+            )
+            if ($LASTEXITCODE -eq 0) {
+                $sourceDirty = if ($statusOutput.Count -gt 0) { "true" } else { "false" }
+            }
+        }
+    }
+}
 
 $rawBase = $env:ORCHESTRATE_HOME
 if ([string]::IsNullOrWhiteSpace($rawBase)) { $rawBase = [Environment]::GetFolderPath("UserProfile") }
@@ -397,6 +426,9 @@ try {
 
     $stateText = @(
         "version=7",
+        "release_version=$releaseVersion",
+        "source_commit=$sourceCommit",
+        "source_dirty=$sourceDirty",
         "backup_id=$backupId",
         "skill_sha256=$skillHash",
         "compat_skill_sha256=$compatHash",

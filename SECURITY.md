@@ -4,16 +4,17 @@
 
 Security fixes target the latest tagged release and the current `main` branch.
 
-| Version | Supported |
+| Channel | Supported |
 | --- | --- |
-| `1.1.x` | Yes |
-| `< 1.1` | No |
+| Latest tagged release | Yes |
+| Current `main` | Yes, as unreleased code |
+| Older tags and branches | No, unless a maintainer says otherwise |
 
 ## Reporting a vulnerability
 
 Report suspected vulnerabilities through GitHub's [private vulnerability reporting](https://github.com/SII-k7/codex-air/security/advisories/new). Do not open a public issue and do not include credentials, tokens, private paths, or private repository content.
 
-Include the affected version or commit, operating system and Codex surface, reproduction steps, impact, and a minimally redacted proof of concept when safe. We aim to acknowledge a report within seven days and will share the next update after triage.
+Include the affected version from `VERSION` or full commit SHA, operating system and Codex surface, reproduction steps, impact, and a minimally redacted proof of concept when safe. We aim to acknowledge a report within seven days and will share the next update after triage.
 
 ## Security scope
 

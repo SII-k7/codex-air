@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "benchmark": "Codex AIR low-credit coding regression microbench",
+  "evidence_class": "historical_direct_replay_development_gate",
+  "frozen_at": "2026-08-27T00:00:00+08:00",
+  "source": {
+    "benchmark": "DeepSWE v1.1",
+    "repository": "https://github.com/datacurve-ai/deep-swe",
+    "git_sha": "435ee89ec2f2e2289f33b0da4f992f0b7b7266b9",
+    "historical_run_date": "2026-08-23",
+    "codex_cli": "0.149.0",
+    "direct_arm": "gpt-5.6-sol / xhigh / Standard",
+    "tests_tree_hash_algorithm": "sha256(relative_path_utf8 NUL file_sha256_hex LF for sorted regular files)",
+    "note": "Historical Direct cells are reused only for low-cost development regression. This is not a fresh matched A/B or a general coding leaderboard."
+  },
+  "pricing": {
+    "unit": "Pro credits per 1M tokens",
+    "frozen_at": "2026-08-27",
+    "source": "https://learn.chatgpt.com/docs/pricing",
+    "speed_source": "https://learn.chatgpt.com/docs/agent-configuration/speed",
+    "models": {
+      "gpt-5.6-sol": {
+        "input": 100.0,
+        "cached_input": 10.0,
+        "output": 500.0,
+        "requested_tier_multiplier": 1.0
+      },
+      "gpt-5.6-luna": {
+        "input": 5.0,
+        "cached_input": 0.5,
+        "output": 30.0,
+        "requested_tier_multiplier": 2.5
+      }
+    }
+  },
+  "budget": {
+    "screen_credit_cap": 70.0,
+    "cumulative_credit_hard_cap": 220.0,
+    "full_historical_ab_credits": 1278.17
+  },
+  "stages": [
+    {
+      "id": "screen",
+      "task_ids": [
+        "sqlfmt-create-table-ddl-formatting",
+        "termenv-preserve-ansi-resets"
+      ],
+      "scope": "stage",
+      "gates": {
+        "min_resolved_delta": 0,
+        "min_mean_partial_delta": -0.005,
+        "min_task_partial_delta": -0.015,
+        "max_median_time_ratio": 1.1,
+        "max_cost_ratio": 0.55,
+        "min_luna_token_share": 0.7,
+        "max_tool_calls": 160,
+        "max_short_polls": 6,
+        "max_credits": 70.0
+      }
+    },
+    {
+      "id": "confirm",
+      "task_ids": [
+        "kea-atomic-signal-selectors",
+        "effect-sse-httpapi-streaming"
+      ],
+      "scope": "cumulative",
+      "gates": {
+        "min_resolved_delta": 0,
+        "min_mean_partial_delta": -0.005,
+        "min_task_partial_delta": -0.015,
+        "max_median_time_ratio": 1.1,
+        "max_cost_ratio": 0.55,
+        "min_luna_token_share": 0.7,
+        "max_tool_calls": 500,
+        "max_short_polls": 12,
+        "max_credits": 220.0
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "id": "sqlfmt-create-table-ddl-formatting",
+      "stage": "screen",
+      "language": "python",
+      "expected_worker_profile": "air-efficient-worker",
+      "verifier_home": "/tmp/home",
+      "signal": "historical AIR efficiency win",
+      "image_digest": "sha256:f09016a93979391f413ea87a6dff4dc90b813c455282fd9d60d994eaa093e0a8",
+      "base_commit": "da140993a4547170ef85dc5ce7ce1c270f4322b3",
+      "instruction_sha256": "9e445e5be9287df6e9843c4d630fc4ddd268775b4511a04f8e6560933064693c",
+      "tests_tree_sha256": "880a5fa0284ebdffb0f3b3fcc96ad815024dea1985013c2c92ab715708eecef2",
+      "historical_direct": {
+        "resolved": 0,
+        "partial": 0.9938697318007663,
+        "elapsed_seconds": 1548.0682400459773,
+        "pro_credits": 110.22572
+      },
+      "historical_air": {
+        "resolved": 0,
+        "partial": 0.9969348659003832,
+        "elapsed_seconds": 1043.927051717008,
+        "pro_credits": 18.90886,
+        "tool_calls": 71,
+        "short_polls": 5
+      }
+    },
+    {
+      "id": "termenv-preserve-ansi-resets",
+      "stage": "screen",
+      "language": "go",
+      "expected_worker_profile": "air-efficient-worker",
+      "verifier_home": "/root",
+      "signal": "historical AIR per-task partial regression",
+      "image_digest": "sha256:555ed2efa5299b9e67a3d2ab0e443f6569dde695bffaac8a7f514b7de471e3b2",
+      "base_commit": "368a3572b8146cc038b3f240da6792003d7e42c5",
+      "instruction_sha256": "a48484e41aedb6ab3ad0bc6deff51983b4ed47302ceea642e03d9137ae9ee421",
+      "tests_tree_sha256": "31568afaccd17c065cac0848150c054383c770ad7d87391580aa1e5a34af9c76",
+      "historical_direct": {
+        "resolved": 0,
+        "partial": 0.9672131147540983,
+        "elapsed_seconds": 1179.1803725860082,
+        "pro_credits": 58.23672
+      },
+      "historical_air": {
+        "resolved": 0,
+        "partial": 0.9426229508196722,
+        "elapsed_seconds": 1324.7268904920202,
+        "pro_credits": 22.1923525,
+        "tool_calls": 84,
+        "short_polls": 0
+      }
+    },
+    {
+      "id": "kea-atomic-signal-selectors",
+      "stage": "confirm",
+      "language": "typescript",
+      "expected_worker_profile": "air-complex-worker",
+      "verifier_home": "/tmp/home",
+      "signal": "historical AIR strict-resolution regression",
+      "image_digest": "sha256:2a3e673e71b0516d27fa3a93f094633d606f5aa6fdcb01521334cafaacd47f24",
+      "base_commit": "6c7ebba57821989733a11d6f3888816658584d97",
+      "instruction_sha256": "a7bde3311b63eb381fc29740e504ccb259e60466625b0626fa440ac545527deb",
+      "tests_tree_sha256": "0ad740cb8f84343ae468d57655c2c69cba54e6d8a5dc61ddc617a9e8bd8192ff",
+      "historical_direct": {
+        "resolved": 1,
+        "partial": 1.0,
+        "elapsed_seconds": 1459.9488802429987,
+        "pro_credits": 91.42372
+      },
+      "historical_air": {
+        "resolved": 0,
+        "partial": 0.9867549668874173,
+        "elapsed_seconds": 1817.0747672420111,
+        "pro_credits": 38.2190775,
+        "tool_calls": 140,
+        "short_polls": 0
+      }
+    },
+    {
+      "id": "effect-sse-httpapi-streaming",
+      "stage": "confirm",
+      "language": "typescript",
+      "expected_worker_profile": "air-complex-worker",
+      "verifier_home": "/tmp/home",
+      "signal": "historical AIR long-horizon tool-loop stress",
+      "image_digest": "sha256:6a728da85db92e3fcd4826473886dbfe14f965e8edb8e62707fa0f35f14b681c",
+      "base_commit": "9245bc59ebfa688e8c92dd691296ee69d0815e59",
+      "instruction_sha256": "b9fc8403f53c0aed7e53cf7c2ca3f5df4249de5af8ac5ffc1dfc8500d21ce205",
+      "tests_tree_sha256": "f3a3454d6102a081608195b8d11c7328f13313f28c091a83c0a60c0649aafac9",
+      "historical_direct": {
+        "resolved": 0,
+        "partial": 0.9829059829059829,
+        "elapsed_seconds": 1895.8130558620323,
+        "pro_credits": 236.8305
+      },
+      "historical_air": {
+        "resolved": 0,
+        "partial": 0.9914529914529915,
+        "elapsed_seconds": 2672.284201389004,
+        "pro_credits": 110.7467425,
+        "tool_calls": 350,
+        "short_polls": 100
+      }
+    }
+  ]
+}

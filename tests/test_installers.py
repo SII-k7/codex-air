@@ -96,6 +96,9 @@ class PosixInstallerTests(unittest.TestCase):
             self.assertTrue(self.path(relative).exists(), relative)
         state = self.path(STATE).read_text(encoding="utf-8")
         self.assertIn("version=7", state)
+        self.assertIn(f"release_version={(ROOT / 'VERSION').read_text(encoding='utf-8').strip()}", state)
+        self.assertRegex(state, r"(?m)^source_commit=(?:[0-9a-f]{40,64}|unknown)$")
+        self.assertRegex(state, r"(?m)^source_dirty=(?:true|false|unknown)$")
         self.assertIn("skill_sha256=", state)
         self.assertIn("compat_skill_sha256=", state)
         self.assertIn("controller_sha256=", state)
@@ -308,6 +311,25 @@ class ScriptSurfaceTests(unittest.TestCase):
         self.assertIn("ORCHESTRATE_FAILPOINT", install)
         self.assertIn("RestoreLatest", uninstall)
         self.assertIn("v050", lifecycle)
+
+    def test_lifecycle_commands_expose_help_without_requiring_a_home(self) -> None:
+        for script in ("install.sh", "uninstall.sh", "doctor.sh", "default.sh"):
+            result = subprocess.run(
+                ["bash", str(SCRIPTS / script), "--help"],
+                cwd=ROOT,
+                env={**os.environ, "ORCHESTRATE_HOME": ""},
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(0, result.returncode, result.stdout)
+            self.assertIn("Usage:", result.stdout)
+
+        for script in ("install.ps1", "uninstall.ps1", "doctor.ps1", "default.ps1"):
+            text = (SCRIPTS / script).read_text(encoding="utf-8")
+            self.assertIn("--help", text, script)
+            self.assertIn("[switch]$Help", text, script)
 
 
 if __name__ == "__main__":

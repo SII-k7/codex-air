@@ -2,18 +2,24 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+usage() {
+  printf 'Usage: default.sh status|check|disable|--help\n'
+  printf 'Inspect or remove legacy global routing; Codex AIR remains explicit-only.\n'
+}
+
 if (( $# != 1 )); then
-  printf 'Usage: default.sh status|check|disable\n' >&2
+  usage >&2
   exit 1
 fi
 action=$1
 case "$action" in
   status|check|disable) ;;
+  -h|--help) usage; exit 0 ;;
   enable)
     printf 'default.sh: global default routing has been removed; invoke $codex-air explicitly\n' >&2
     exit 1
     ;;
-  *) printf 'Usage: default.sh status|check|disable\n' >&2; exit 1 ;;
+  *) usage >&2; exit 1 ;;
 esac
 
 die() {

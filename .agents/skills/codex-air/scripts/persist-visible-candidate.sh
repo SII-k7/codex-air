@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Read-only validation for explicitly named paths in the active worktree.
+# The generated patch is checked but never applied or transferred.
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -31,7 +33,7 @@ path_identity() {
 }
 
 [[ $# -ge 1 ]] || {
-  printf 'Usage: persist-visible-candidate.sh [--workspace] ABSOLUTE_WORKSPACE [--] [RELATIVE_PATH...]\n' >&2
+  printf 'Usage: persist-visible-candidate.sh [--workspace] ABSOLUTE_WORKSPACE [--] RELATIVE_PATH...\n' >&2
   exit 2
 }
 if [[ "$1" == --workspace ]]; then
@@ -45,40 +47,20 @@ fi
 if [[ "${1:-}" == -- ]]; then
   shift
 fi
+[[ $# -ge 1 ]] || die 'at least one exact relative path is required; automatic discovery is disabled'
 [[ "$workspace" == /* && "$workspace" != / ]] || die 'workspace must be a non-root absolute path'
 workspace=$(CDPATH= cd -- "$workspace" && pwd -P) || die 'workspace cannot be resolved'
 repo_root=$(git -C "$workspace" rev-parse --show-toplevel 2>/dev/null) || die 'workspace is not a Git worktree'
 repo_root=$(CDPATH= cd -- "$repo_root" && pwd -P) || die 'Git root cannot be resolved'
 [[ "$repo_root" == "$workspace" ]] || die 'workspace must be the Git worktree root'
 
-paths=()
+paths=("$@")
 identities=()
-if [[ $# -eq 0 ]]; then
-  while IFS= read -r -d '' path; do
-    paths+=("$path")
-  done < <(git -C "$workspace" diff --name-only --no-renames -z HEAD --)
-  while IFS= read -r -d '' path; do
-    duplicate=0
-    # Bash 3.2 (the macOS system Bash) treats an empty-array expansion as an
-    # unbound variable under `set -u`. The `-` form keeps discovery portable;
-    # the empty sentinel is ignored.
-    for existing in "${paths[@]-}"; do
-      [[ -n "$existing" ]] || continue
-      if [[ "$existing" == "$path" ]]; then
-        duplicate=1
-        break
-      fi
-    done
-    (( duplicate == 1 )) || paths+=("$path")
-  done < <(git -C "$workspace" ls-files --others --exclude-standard -z --)
-  [[ ${#paths[@]} -ge 1 ]] || die 'Git found no visible candidate changes'
-else
-  paths=("$@")
-fi
 validated_paths=()
 for path in "${paths[@]}"; do
   [[ -n "$path" && "$path" != /* && "$path" != -* ]] || die "invalid relative path: $path"
   [[ "$path" != *$'\n'* && "$path" != *$'\r'* && "$path" != *$'\t'* ]] || die 'control characters are not allowed in paths'
+  [[ "$path" != */ && "$path" != *//* ]] || die "non-canonical relative path: $path"
   case "/$path/" in
     */../*|*/./*) die "non-canonical relative path: $path" ;;
   esac
@@ -97,17 +79,14 @@ done
 
 patch_file=$(mktemp "${TMPDIR:-/tmp}/codex-air-visible-candidate.XXXXXX") || die 'cannot create temporary patch'
 cleanup() {
-  if [[ "${candidate_reversed:-0}" == 1 ]]; then
-    git -C "$workspace" apply --binary "$patch_file" >/dev/null 2>&1 ||
-      printf 'persist-visible-candidate: automatic final-state recovery failed\n' >&2
-  fi
   rm -f -- "$patch_file"
 }
 trap cleanup EXIT HUP INT TERM
 
 for path in "${paths[@]}"; do
-  if git ls-files --error-unmatch -- "$path" >/dev/null 2>&1; then
-    git diff --binary --full-index --no-ext-diff --no-renames HEAD -- "$path" >>"$patch_file"
+  patch_size_before=$(wc -c <"$patch_file")
+  if GIT_LITERAL_PATHSPECS=1 git ls-files --error-unmatch -- "$path" >/dev/null 2>&1; then
+    GIT_LITERAL_PATHSPECS=1 git diff --binary --full-index --no-ext-diff --no-renames HEAD -- "$path" >>"$patch_file"
   elif [[ -e "$path" || -L "$path" ]]; then
     diff_status=0
     git diff --no-index --binary --full-index -- /dev/null "$path" >>"$patch_file" || diff_status=$?
@@ -115,19 +94,16 @@ for path in "${paths[@]}"; do
   else
     die "path is absent and untracked, so no candidate change can be persisted: $path"
   fi
+  patch_size_after=$(wc -c <"$patch_file")
+  [[ "$patch_size_after" -gt "$patch_size_before" ]] || die "path has no candidate change relative to HEAD: $path"
 done
 
 [[ -s "$patch_file" ]] || die 'changed paths produced an empty candidate patch'
 git apply --reverse --check --binary "$patch_file" || die 'candidate patch cannot reverse from the visible final state'
-git apply --reverse --binary "$patch_file" || die 'candidate reverse replay failed'
-candidate_reversed=1
-git apply --check --binary "$patch_file" || die 'candidate patch cannot reapply from the reconstructed baseline'
-git apply --binary "$patch_file" || die 'candidate forward replay failed'
-candidate_reversed=0
 
 for index in "${!paths[@]}"; do
   actual=$(path_identity "${paths[index]}")
-  [[ "$actual" == "${identities[index]}" ]] || die "final identity mismatch after replay: ${paths[index]}"
+  [[ "$actual" == "${identities[index]}" ]] || die "final identity changed during validation: ${paths[index]}"
   printf 'PERSISTED\t%s\t%s\n' "${paths[index]}" "$actual"
 done
 printf 'PERSISTENCE_PASS\tpaths=%s\n' "${#paths[@]}"

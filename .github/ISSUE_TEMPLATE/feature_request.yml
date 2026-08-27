@@ -48,7 +48,7 @@ body:
     id: routing-impact
     attributes:
       label: Routing and safety impact
-      description: Note effects on Sol control, worker selection, permissions, write ownership, evidence, or fail-closed behavior.
+      description: Note effects on the single Sol controller, exact Sol/Luna profiles, permissions, write ownership, final review, evidence, or fail-closed behavior. State "none" when unaffected; Terra is intentionally out of scope.
     validations:
       required: true
   - type: textarea

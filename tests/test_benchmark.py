@@ -10,16 +10,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests" / "fixtures" / "real-project-benchmark.json"
 REPORT = ROOT / "tests" / "real-project-benchmark.md"
-README_FILES = (ROOT / "README.md", ROOT / "README.en.md")
+README_FILES = (ROOT / "README.md", ROOT / "README.zh-CN.md")
 BENCHMARK_DOCUMENTS = README_FILES + (
     REPORT,
     ROOT
     / "docs"
+    / "archive"
     / "superpowers"
     / "specs"
     / "2026-08-02-chinese-cost-first-real-project-benchmark-design.md",
     ROOT
     / "docs"
+    / "archive"
     / "superpowers"
     / "plans"
     / "2026-08-02-chinese-cost-first-real-project-benchmark.md",
@@ -39,6 +41,8 @@ class RealProjectBenchmarkTests(unittest.TestCase):
 
     def test_fixture_has_three_anonymous_categories(self) -> None:
         data = self.load_fixture()
+        self.assertEqual("historical_pre_codex_air_v1", data["evidence_scope"])
+        self.assertEqual("docs/evidence/README.md", data["current_guidance"])
         categories = data["categories"]
         self.assertEqual(EXPECTED_CATEGORIES, {item["id"] for item in categories})
         self.assertTrue(all(item["sample_count"] >= 1 for item in categories))
@@ -113,6 +117,7 @@ class RealProjectBenchmarkTests(unittest.TestCase):
         self.assertTrue(REPORT.is_file(), REPORT)
         report = REPORT.read_text(encoding="utf-8")
         for signal in (
+            "Historical evidence only",
             "measured",
             "scenario_model_projection",
             "unavailable",
@@ -138,10 +143,12 @@ class RealProjectBenchmarkTests(unittest.TestCase):
             self.assertRegex(window, historical_markers)
         for path in README_FILES:
             text = path.read_text(encoding="utf-8")
-            for signal in ("62.0%", "67.0%", "49.3%", "56.3%", "37.5%", "44.5%", "0.125"):
-                self.assertIn(signal, text, path.name)
-            self.assertIn("scenario_model_projection", text, path.name)
-            self.assertRegex(text, r"(?i)not.*guarantee|不是.*保证")
+            self.assertIn("docs/evidence/README", text, path.name)
+            self.assertIn("v1.0", text, path.name)
+            self.assertIn("v1.2", text, path.name)
+            self.assertNotIn("scenario_model_projection", text, path.name)
+            for obsolete in ("62.0%", "67.0%", "49.3%", "56.3%", "37.5%", "44.5%", "0.125"):
+                self.assertNotIn(obsolete, text, path.name)
             self.assertNotRegex(text, r"(?i)(?:complex|复杂).{0,160}65%")
             self.assertNotRegex(text, r"1\s*/\s*25")
             self.assertNotIn("sample_validated_projection", text)

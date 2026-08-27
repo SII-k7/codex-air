@@ -1,27 +1,66 @@
 # TODO
 
-## v1.1 Sol-control / Luna-execution matched rerun
+## v1.2 low-credit iteration gate
+
+Status: **first screen stopped at budget guard; diagnostic only**.
+
+The 2026-08-27 SQLFmt + Termenv screen stopped at 66.85 of the 70-credit
+screen budget. Both model runs were interrupted before a terminal Luna record
+and Sol final review, so the cells are `INVALID` / `BUDGET_ABORTED`; the
+confirmation stage was not launched. The offline verifier output is promising
+but is not performance evidence. See `docs/evidence/README.md` and
+`tests/fixtures/microbench-screen-20260827.json` for the exact boundary.
+
+Use `tests/deepswe-v11-microbench.md` and
+`tests/fixtures/microbench-v1.json` for routine architecture iterations:
+
+1. run the SQLFmt + Termenv screen only, with a 70-credit hard cap;
+2. stop on any quality, latency, cost, Luna-share, polling, tool-call, routing,
+   tier, provenance, or Terra gate failure;
+3. run Kea + Effect only after screen PASS, with a 220-credit cumulative cap;
+4. publish the zero-model scorer output as historical-replay development
+   evidence, never as a fresh matched A/B result;
+5. require Host-side stage admission, one hard wall timer, one interrupt, and
+   no automatic model retry.
+
+Run at least one preregistered fresh Direct anchor before a release-level
+performance claim after a Codex CLI, model, price, or runtime change. Reserve
+the full hardest-10 matched A/B below for major architecture releases or when
+quota is deliberately allocated; do not spend it on every prompt iteration.
+
+## v1.2 Sol-control / Luna-execution matched rerun
 
 Status: **deferred until quota is available**.
 
 Rerun the same frozen hardest-10 tasks and containers, comparing Direct
-Sol/xhigh/Standard with v1.1 AIR:
+Sol/xhigh/Standard with v1.2 AIR:
 
 - the current proved Sol/xhigh Host, or one fallback Sol/xhigh controller,
   performs understanding, repository exploration, decomposition, solution
   selection, exact task packets, and final artifact review;
-- Luna/max/Fast performs bounded implementation, verification, and at most one
-  focused correction;
+- Luna/max with Fast requested performs bounded implementation, verification,
+  and at most one focused correction;
 - Terra calls and tokens must remain zero;
 - record Sol versus Luna input/cached/output tokens, requested and actual tier,
   wall time, correction count, strict resolved, and partial score;
 - compare raw token ratio as well as tier-priced credits/API-equivalent cost.
 
 Use the same 1,800-credit absolute cap unless a new estimate based on current
-rates is approved. The v1.1 success targets are quality non-inferior on both
+rates is approved. The v1.2 success targets are quality non-inferior on both
 strict resolved and mean partial, median paired wall ratio `0.85–1.15`, priced
 cost at most `55%` of Direct, at least 70% of model tokens on Luna, and total
 raw model tokens no more than `1.10×` Direct for the first rerun.
+
+## Broader distribution
+
+Status: **v1.2 ships as a standalone Skill plus five custom agent profiles**.
+
+Investigate an optional Codex Plugin package for a later release. Adopt it only
+when installation can deliver and validate the complete Skill/agent bundle,
+retain explicit-only invocation, preserve transactional rollback, and keep
+Terra at zero. Until then, the versioned POSIX and Windows installers remain
+the supported distribution path; do not publish a Skill-only package that
+silently loses the configured Sol/Luna roles.
 
 ## Completed v1.0 DeepSWE v1.1 hardest-10 A/B
 
@@ -131,9 +170,10 @@ available.
   below the 1,800 cap.
 - Valid four-way wall time: 2h 12m 47s.
 
-Conclusion: the current AIR architecture achieves the aggregate cost target
-and nearly matches mean partial quality, but this small run does not establish
-strict quality non-inferiority and does not achieve comparable latency.
+Conclusion: the historical v1.0 AIR architecture achieved the aggregate cost
+target and nearly matched mean partial quality, but this small run did not
+establish strict quality non-inferiority or comparable latency. It is not a
+measurement of the current v1.2 architecture.
 
 References:
 

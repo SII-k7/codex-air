@@ -57,6 +57,8 @@ $requiredFiles = @(
     ".agents/skills/codex-air/scripts/persist-visible-candidate.sh",
     ".agents/skills/codex-air/SKILL.md",
     ".agents/skills/codex-air/agents/openai.yaml",
+    ".agents/skills/codex-air/assets/icon-small.svg",
+    ".agents/skills/codex-air/assets/icon-large.svg",
     ".codex/agents/air-controller.toml",
     ".codex/agents/air-critical-controller.toml",
     ".codex/agents/air-complex-worker.toml",
@@ -68,11 +70,15 @@ $requiredFiles = @(
     "scripts/install.ps1",
     "scripts/validate.ps1",
     "scripts/uninstall.ps1",
+    "scripts/doctor.ps1",
+    "scripts/default.ps1",
     "scripts/test.sh",
     "scripts/doctor.sh",
     "scripts/default.sh",
     "scripts/benchmark_ab.py",
+    "scripts/microbench.py",
     "README.md",
+    "README.zh-CN.md",
     "README.en.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
@@ -84,14 +90,18 @@ $requiredFiles = @(
     ".github/ISSUE_TEMPLATE/config.yml",
     ".github/pull_request_template.md",
     "tests/windows-lifecycle.ps1",
-    "tests/fixtures/forward-cases.json",
     "tests/fixtures/v100-ab-benchmark.json",
     "tests/fixtures/deepswe-v11-ab.json",
+    "tests/fixtures/microbench-v1.json",
+    "tests/fixtures/microbench-screen-20260827.json",
     "tests/deepswe-v11-ab.md",
+    "tests/deepswe-v11-microbench.md",
     "tests/v100-ab-benchmark.md",
     "tests/v100-live-smoke.md",
     "tests/test_v100_benchmark.py",
     "tests/test_v100_evidence_control.py",
+    "tests/test_hard_benchmark_protocol.py",
+    "tests/test_microbench.py",
     "tests/test_default_routing.py",
     "CODEX_AIR_V1_IMPLEMENTATION_REPORT.md",
     "docs/ubuntu-cli-install.md",
@@ -136,17 +146,21 @@ $skillText = Get-Text $skillPath
 $contractText = Get-Text (Join-Path $repoRoot ".agents/skills/codex-air/references/orchestration.md")
 $runtimeText = Get-Text (Join-Path $repoRoot ".agents/skills/codex-air/references/runtime-notes.md")
 $combined = $skillText + "`n" + $contractText + "`n" + $runtimeText
+$normalizedCombined = [regex]::Replace($combined, '\s+', ' ')
 foreach ($marker in @(
     "Planning", "Routing", "Ownership", "Verification", "Evidence",
     "Requirement ID", "one owner", "Native Nested", "Compatibility",
-    "Sol xhigh", "Luna Max Fast", "Terra is forbidden", "Mode: Single Executor",
+    "Sol xhigh", "Fast requested", "actual tier", "Terra is forbidden", "Mode: Single Executor",
     "deterministic candidate persistence", "persist-visible-candidate.sh", "VISIBLE_CANDIDATE", "Final file SHA256",
-    "timeout_ms=3600000", "PYTHONDONTWRITEBYTECODE=1", "evaluation isolation",
+    "hard wall time", "PYTHONDONTWRITEBYTECODE=1", "evaluation isolation",
     'fork_turns="none"', "Fail Closed", "PASS | FIX | BLOCKED",
-    "Status: PASS | REPLAN_NEEDED | BLOCKED", "one Sol semantic controller", "Direct", "Controlled AIR",
+    "Status: PASS | REPLAN_NEEDED | BLOCKED", "one Sol semantic controller",
+    "verify the verifier", "result-only", "remaining budget", "Run envelope", "Critical In-Place",
+    "exact-relative-path", "Direct", "Controlled AIR",
     "air-controller", "air-critical-controller", "air-complex-worker", "air-efficient-worker", "air-challenger"
 )) {
-    Assert-Condition ($combined.IndexOf($marker, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) "orchestration contract is missing: $marker"
+    $normalizedMarker = [regex]::Replace($marker, '\s+', ' ')
+    Assert-Condition ($normalizedCombined.IndexOf($normalizedMarker, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) "orchestration contract is missing: $marker"
 }
 
 $openaiText = Get-Text (Join-Path $repoRoot ".agents/skills/codex-air/agents/openai.yaml")
@@ -154,11 +168,19 @@ foreach ($pattern in @(
     '(?m)^interface:\s*$',
     '(?m)^\s{2}display_name:\s*"Codex AIR"\s*$',
     '(?m)^\s{2}short_description:\s*"[^"\r\n]{25,64}"\s*$',
+    '(?m)^\s{2}icon_small:\s*"\./assets/icon-small\.svg"\s*$',
+    '(?m)^\s{2}icon_large:\s*"\./assets/icon-large\.svg"\s*$',
+    '(?m)^\s{2}brand_color:\s*"#0F766E"\s*$',
     '(?m)^\s{2}default_prompt:\s*".*\$codex-air.*"\s*$',
     '(?m)^policy:\s*$',
     '(?m)^\s{2}allow_implicit_invocation:\s*false\s*$'
 )) {
     Assert-Regex $openaiText $pattern "canonical openai.yaml is invalid"
+}
+foreach ($iconName in @("icon-small.svg", "icon-large.svg")) {
+    $iconPath = Join-Path $repoRoot ".agents/skills/codex-air/assets/$iconName"
+    Assert-Condition ((Get-Item -LiteralPath $iconPath).Length -lt 5000) "Skill icon is unexpectedly large"
+    Assert-Regex (Get-Text $iconPath) '<svg' "Skill icon is not SVG"
 }
 
 $compatText = Get-Text (Join-Path $repoRoot ".agents/skills/codex-prove/agents/openai.yaml")
@@ -183,8 +205,8 @@ foreach ($expectation in $agentExpectations) {
     Assert-Regex $text ('(?m)^name\s*=\s*"' + [regex]::Escape($expectation[1]) + '"\s*$') "agent name is invalid"
     Assert-Regex $text ('(?m)^model\s*=\s*"' + [regex]::Escape($expectation[2]) + '"\s*$') "agent model is invalid"
     Assert-Regex $text ('(?m)^model_reasoning_effort\s*=\s*"' + [regex]::Escape($expectation[3]) + '"\s*$') "agent reasoning effort is invalid"
-    Assert-Regex $text '(?m)^model_context_window\s*=\s*272000\s*$' "agent must isolate the current Codex default context window"
-    Assert-Regex $text '(?m)^model_auto_compact_token_limit\s*=\s*244800\s*$' "agent must isolate the current Codex default auto-compact limit"
+    Assert-Regex $text '(?m)^model_context_window\s*=\s*272000\s*$' "agent must pin the v1.2 profile context window"
+    Assert-Regex $text '(?m)^model_auto_compact_token_limit\s*=\s*244800\s*$' "agent must pin the v1.2 profile auto-compact limit"
     Assert-Regex $text ('(?m)^sandbox_mode\s*=\s*"' + [regex]::Escape($expectation[4]) + '"\s*$') "agent sandbox is invalid"
     Assert-Regex $text '(?s)developer_instructions\s*=\s*""".+"""' "agent instructions are missing"
     if ($expectation[5]) { Assert-Regex $text '(?is)(?:do not|never) .*?(spawn|create).*?subagent' "execution agent can create subagents" }
@@ -220,6 +242,8 @@ foreach ($script in @(
     "scripts/install.ps1",
     "scripts/validate.ps1",
     "scripts/uninstall.ps1",
+    "scripts/doctor.ps1",
+    "scripts/default.ps1",
     "tests/windows-lifecycle.ps1"
 )) {
     $path = Join-Path $repoRoot $script
@@ -229,14 +253,20 @@ foreach ($script in @(
     Assert-Condition ($errors.Count -eq 0) "PowerShell syntax failed: $script"
 }
 
-$forwardCases = Get-Content -LiteralPath (Join-Path $repoRoot "tests/fixtures/forward-cases.json") -Raw | ConvertFrom-Json
-Assert-Condition ($forwardCases.Count -ge 13) "forward test fixture is incomplete"
 $benchmark = Get-Content -LiteralPath (Join-Path $repoRoot "tests/fixtures/v100-ab-benchmark.json") -Raw | ConvertFrom-Json
 Assert-Condition ($null -ne $benchmark) "benchmark fixture is invalid"
 $hardBenchmark = Get-Content -LiteralPath (Join-Path $repoRoot "tests/fixtures/deepswe-v11-ab.json") -Raw | ConvertFrom-Json
 Assert-Condition ($hardBenchmark.status -eq "FROZEN_NOT_RUN" -and $hardBenchmark.source.task_count -eq 113) "hard benchmark fixture is invalid"
+Assert-Condition ($hardBenchmark.evidence_class -eq "prospective_protocol_only" -and $hardBenchmark.architecture_version -eq "1.2") "hard benchmark evidence boundary is invalid"
+Assert-Condition ($hardBenchmark.arms.direct.Contains("sol / xhigh / default") -and $hardBenchmark.arms.air.Contains("Fast requested")) "hard benchmark routing is stale"
+Assert-Condition ($hardBenchmark.arms.terra -eq "zero calls and zero tokens") "hard benchmark Terra boundary is invalid"
 Assert-Condition ($hardBenchmark.frontier_difficulty_evidence.gpt_5_6_sol_max_percent -lt 100) "hard benchmark does not separate Sol max"
 Assert-Condition ($hardBenchmark.frontier_difficulty_evidence.claude_fable_5_max_percent -lt 100) "hard benchmark does not separate Fable 5 max"
+$microbench = Get-Content -LiteralPath (Join-Path $repoRoot "tests/fixtures/microbench-v1.json") -Raw | ConvertFrom-Json
+Assert-Condition ($microbench.evidence_class -eq "historical_direct_replay_development_gate") "microbenchmark evidence class is invalid"
+Assert-Condition ($microbench.tasks.Count -eq 4 -and $microbench.stages.Count -eq 2) "microbenchmark task stages are invalid"
+Assert-Condition ($microbench.budget.screen_credit_cap -eq 70 -and $microbench.budget.cumulative_credit_hard_cap -eq 220) "microbenchmark credit caps are invalid"
+Assert-Condition ($microbench.pricing.models.'gpt-5.6-luna'.requested_tier_multiplier -eq 2.5) "microbenchmark Luna Fast price is invalid"
 
 $credentialPatterns = @(
     'AKIA[0-9A-Z]{16}',

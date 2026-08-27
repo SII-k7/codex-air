@@ -1,11 +1,18 @@
 #requires -Version 5.1
 [CmdletBinding()]
 param(
-    [switch]$RestoreLatest
+    [switch]$RestoreLatest,
+    [Alias("h", "-help")][switch]$Help
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+if ($Help) {
+    Write-Output "Usage: uninstall.ps1 [-RestoreLatest] [-Help|--help]"
+    Write-Output "Remove the checksum-verified Codex AIR install; optionally restore its latest backup."
+    exit 0
+}
 
 function Test-PathExists {
     param([Parameter(Mandatory = $true)][string]$Path)
@@ -122,6 +129,24 @@ if ([string]::IsNullOrWhiteSpace($rawBase) -or -not [System.IO.Path]::IsPathRoot
 $baseDir = [System.IO.Path]::GetFullPath($rawBase)
 if ($baseDir -eq [System.IO.Path]::GetPathRoot($baseDir)) { throw "refusing the filesystem root" }
 Assert-PlainPath $baseDir "Directory"
+
+$globalInstructions = Join-Path $baseDir ".codex/AGENTS.md"
+if (Test-PathExists $globalInstructions) {
+    Assert-PlainPath $globalInstructions "File"
+    $instructions = Get-Content -LiteralPath $globalInstructions -Raw
+    foreach ($marker in @(
+        "<!-- codex-air-default:start -->",
+        "<!-- codex-air-default:end -->",
+        "<!-- codex-prove-default:start -->",
+        "<!-- codex-prove-default:end -->",
+        "<!-- sol-control-default:start -->",
+        "<!-- sol-control-default:end -->"
+    )) {
+        if ($instructions.Contains($marker)) {
+            throw "default routing is enabled; run powershell -File scripts/default.ps1 disable before uninstalling"
+        }
+    }
+}
 
 $relativePaths = @(
     ".agents/skills/codex-air",

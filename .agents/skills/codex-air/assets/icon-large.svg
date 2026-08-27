@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title description">
+  <title id="title">Codex AIR</title>
+  <desc id="description">Three converging air streams represent Sol planning, Luna execution, and verified delivery.</desc>
+  <rect width="320" height="320" rx="72" fill="#0B1220"/>
+  <circle cx="160" cy="160" r="114" fill="none" stroke="#1E293B" stroke-width="4"/>
+  <path d="M65 112C103 71 198 68 257 106" fill="none" stroke="#5EEAD4" stroke-width="27" stroke-linecap="round"/>
+  <path d="M65 163C112 129 204 129 257 162" fill="none" stroke="#67E8F9" stroke-width="27" stroke-linecap="round"/>
+  <path d="M65 215C121 190 200 190 247 211" fill="none" stroke="#FB923C" stroke-width="27" stroke-linecap="round"/>
+  <circle cx="258" cy="106" r="10" fill="#F8FAFC"/>
+  <circle cx="258" cy="162" r="10" fill="#F8FAFC"/>
+  <circle cx="248" cy="211" r="10" fill="#F8FAFC"/>
+</svg>

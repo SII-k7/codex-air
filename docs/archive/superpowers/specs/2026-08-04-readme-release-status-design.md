@@ -1,3 +1,5 @@
+> **Archived historical design.** This is provenance, not current routing or implementation guidance. Use the [documentation index](../../../README.md) for maintained instructions.
+
 # README Release Status Design
 
 Date: 2026-08-04

@@ -1,7 +1,7 @@
 # Frontier coding A/B: DeepSWE v1.1
 
-Status: **selected and frozen, not run**. This document records a future
-evaluation; it does not claim a Codex AIR result.
+Status: **task source and selection frozen; v1.2 protocol not run**. This
+document records a future evaluation; it does not claim a Codex AIR result.
 
 ## Selection
 
@@ -32,13 +32,21 @@ saturate by chance and cannot support a robust claim about frontier quality.
 ## Primary A/B
 
 Run all 113 tasks once per arm. Use the same pinned task tree, Pier version,
-Codex version, root model, max reasoning effort, service tier, timeout, network
-policy, hardware class, and task ordering.
+Codex version, Sol model and `xhigh` effort, Standard controller tier, timeout,
+network policy, hardware class, and task ordering. The only intended difference
+is explicit AIR routing and its Luna execution work.
 
 | Arm | Root behavior | AIR internals |
 | --- | --- | --- |
-| Direct | GPT-5.6 Sol / max / Standard, no AIR invocation | none |
-| AIR | Same root configuration and task prompt, with explicit `$codex-air` | admitted Parallel AIR uses Luna / max / Fast; failed admission uses Lean Luna / max / Fast |
+| Direct | GPT-5.6 Sol / xhigh / Standard, no AIR invocation | none |
+| AIR | One Sol / xhigh / Standard semantic controller with explicit `$codex-air` | one Luna / max worker with Fast requested by default; 2–3 only after the quantitative parallel gate |
+
+The same AIR Sol controller owns understanding, repository exploration,
+solution selection, decomposition, authorization, and final review. Luna owns
+bounded implementation and verification, cannot approve the overall result,
+and reports actual Fast tier as `unobserved` unless authoritative telemetry
+proves it. Routine challenger usage is forbidden and Terra calls/tokens remain
+zero.
 
 Use one attempt per arm-task to limit cost. Counterbalance the arm order per task
 from the pinned task ID hash, and never reuse a candidate, trajectory, cache
@@ -71,9 +79,10 @@ Interpret the results in this order:
    bootstrap confidence interval. Do not infer a win from aggregate prose.
 3. After the quality gate passes, compare end-to-end wall time using total time,
    median paired task ratio, and 95th-percentile task time.
-4. Reprice input, cached-input, output, and reasoning tokens separately for
-   every model and actual service tier. AIR meets its cost target at
-   `AIR / Direct <= 0.55`.
+4. Record raw tokens and reprice input, cached-input, output, and reasoning
+   tokens separately for every model and actual service tier. Keep Pro credits
+   and API dollars as distinct accounting units. AIR meets its cost target at
+   `AIR / Direct <= 0.55` in the preregistered unit.
 5. Declare the architecture successful only when quality is non-inferior, wall
    time is not worse, and the measured cost target is met.
 

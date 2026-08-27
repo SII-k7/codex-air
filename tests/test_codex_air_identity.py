@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Codex AIR v1.1 identity and compatibility-migration contracts."""
+"""Codex AIR identity and compatibility-migration contracts."""
 
 from __future__ import annotations
 
@@ -49,16 +49,25 @@ class RenameMigrationContractTests(unittest.TestCase):
         self.assertNotIn("terra-high-worker.toml", active_names)
         self.assertNotIn("luna-max-worker.toml", active_names)
 
-    def test_public_readmes_publish_new_identity_and_compatibility_window(self) -> None:
-        for relative in ("README.md", "README.en.md"):
+    def test_public_readmes_publish_identity_and_compatibility_window(self) -> None:
+        release_tag = f"v{read(ROOT / 'VERSION').strip()}"
+        for relative in ("README.md", "README.zh-CN.md"):
             text = read(ROOT / relative)
             self.assertIn(REPOSITORY, text, relative)
-            self.assertIn("v1.1.2", text, relative)
+            self.assertIn(release_tag, text, relative)
+            self.assertIn(f"releases/tag/{release_tag}", text, relative)
             self.assertIn("docs/release/runtime-surface-matrix.md", text, relative)
             self.assertIn("$codex-prove", text, relative)
             self.assertIn("$codex-air", text, relative)
             self.assertNotIn("github.com/yehyakin", text, relative)
             self.assertNotIn("github.com/SII-k7/codex-prove", text, relative)
+
+        compatibility = read(ROOT / "README.en.md")
+        self.assertIn("[Canonical English README](README.md)", compatibility)
+        self.assertIn("[简体中文](README.zh-CN.md)", compatibility)
+        self.assertIn(release_tag, compatibility)
+        self.assertNotIn("github.com/yehyakin", compatibility)
+        self.assertNotIn("github.com/SII-k7/codex-prove", compatibility)
 
     def test_installers_use_v1_state_and_preserve_old_state_migration(self) -> None:
         for relative in (

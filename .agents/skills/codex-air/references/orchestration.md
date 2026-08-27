@@ -1,213 +1,117 @@
 # AIR orchestration contract
 
-This reference defines Planning, Routing, Ownership, Verification, and Evidence
-for Controlled AIR and Critical AIR. It has one semantic control plane: Sol
-xhigh. Luna Max Fast executes bounded work. Terra is forbidden.
+This is the normative source for Planning, Routing, Ownership, Verification,
+and Evidence in Controlled AIR and Critical AIR. Sol xhigh owns the semantic
+control plane; Luna Max executes bounded packets with Fast requested. Terra is
+forbidden.
 
-## 1. Establish the sole controller
+## 1. Sole controller and decision sufficiency
 
-Prefer the current Host when authoritative metadata proves
-`gpt-5.6-sol` with `xhigh` or stronger reasoning. Otherwise launch exactly one
-read-only `air-controller` with `fork_turns="none"`; use
-`air-critical-controller` when critical risk is visible at entry.
+Reuse the Host only with proof of exact `gpt-5.6-sol` / `xhigh` / Standard
+requested tier. Any other proved Sol Host may transport one exact fallback
+controller if profile/launch proof exists; record its actual effort/tier as Sol
+overhead. It cannot explore, plan, reread, implement, or review. Non-Sol/unknown
+Hosts are `BLOCKED` / `model_identity` before child calls. Self-report is not
+proof. Never switch controllers.
 
-The fallback Host is only transport, authorization, deterministic candidate
-persistence, and terminal relay. It does not explore, plan, reread file
-contents, or perform a second review. Never switch controllers mid-run. A
-resume packet returns to the same controller.
+At **decision sufficiency**, Sol has falsifiable requirements, decisive facts,
+one approach, fixed interfaces, ownership, risks, authority, and verifier.
+Explore an alternative only for one unresolved material decision.
 
-Fail Closed on missing model identity, effort, sandbox, tier, ownership, or
-authorization proof. Role claims in natural-language output are not runtime
-proof.
+## 2. Requirement graph and routing
 
-## 2. Build the requirement graph
+Record Requirement IDs/conditions, decisive observations, non-goals, solution,
+baseline/dirty paths, verifier assumptions, and bounded nodes. Sol owns semantics;
+Luna owns reversible mechanics inside fixed scope.
 
-The Sol controller reads applicable instructions and the minimum relevant
-repository surface, then records:
+Use `air-efficient-worker` normally; reserve `air-complex-worker` for a bounded
+public interface, large local context, migration/concurrency, or high consequence.
+Both are Luna Max with Fast requested. Tiny localized work stays Direct before
+AIR admission. Every AIR write is Luna-owned; Sol and Terra never implement.
 
-- stable Requirement IDs and falsifiable completion conditions;
-- decisive repository observations with exact files/symbols;
-- user constraints, non-goals, and authorization boundary;
-- the selected solution and rejected material alternatives;
-- baseline HEAD and relevant pre-existing dirty paths;
-- risk flags, verification targets, and verifier assumptions;
-- one or more bounded task nodes with dependencies and ownership;
-- parallel estimates or a single-owner decision.
+## 3. Parallel admission
 
-Repository exploration and solution selection belong to Sol. A task node is
-ready only when its dependencies, approach, exact write scope, read scope,
-verification, and stop conditions are concrete.
+One executor is normal. `Parallel proof` estimates executable-time ratios:
+share >=65%, largest branch <=60%, coordination <=15%, critical path/serial
+<=0.85; and proves ready dependencies, disjoint consequences, live slots, and
+branch ceilings inside the envelope. Shared interfaces/state or sequential
+verification close the gate. Launch one batch and one long wait; quality remains
+non-inferior and authorization unchanged.
 
-## 3. Route execution
+## 4. Ownership and packet
 
-Use `air-efficient-worker` for ordinary bounded implementation. Use
-`air-complex-worker` only when the execution unit has an explicit public
-interface, unusually large local context, migration/concurrency mechanics, or
-high-consequence implementation trigger. Both profiles run Luna Max Fast; the
-complex name changes instructions, never the model.
+Every task has one owner; live tasks must never own the same file/consequence.
+Transfer only before writes or after a terminal capsule. Never widen `write_scope`.
 
-Planning-only and review-only requests need no worker. Tiny or already-localized
-changes may stay Direct when dispatch would dominate, even after explicit AIR
-admission. Record that decision rather than pretending that dispatch is free.
+With `fork_turns="none"`, send the `SKILL.md` packet, remaining envelope, worker
+share, and `Parallel proof`/`NONE`; omit conversation, protocol copies, broad
+listings, unrelated diffs, and duplicate evidence.
 
-Never use Terra. Never use Sol as a routine write worker. Sol may make a tiny
-integration edit only when delegation would require more context and time than
-the edit itself; record those Sol implementation tokens separately.
+Before writes, return `REPLAN_NEEDED` to the same controller when a decisive
+fact is false, the approach cannot satisfy a Requirement ID, scope must expand,
+the verifier targets the wrong artifact, or authority/critical risk changes.
+This is evidence for replanning, not permission to redesign.
 
-## 4. Parallel admission
+Hidden critical risk triggers `Mode: Critical In-Place` in the same Sol
+controller before approval or further writes. It adds safety, authorization,
+rollback, and rollback-verification obligations and inherits the unchanged run
+envelope. If they cannot be established, return `BLOCKED` / `critical_risk`.
 
-One executor is normal. Parallel execution requires all of:
+## 5. Efficient execution state machine
 
-1. parallelizable share at least 65% of estimated serial execution work;
-2. largest branch at most 60% of the parallelizable share;
-3. coordination plus integration overhead at most 15% of serial execution;
-4. two or three ready nodes with disjoint writes and satisfied dependencies;
-5. no competing shared interface, lockfile, generated output, migration state,
-   external resource, or sequential verification bottleneck;
-6. live capacity for the controller and the whole ready batch.
+The run envelope fixes deadline, priced cap/unit/status, Sol phases, aggregate
+Luna calls/launches, replan <=1, correction <=1 total, and challenger=0 normally
+or <=1 explicit/critical. Every stage spends it without reset; reject poor fits.
 
-If any condition is unproved, keep a single Luna owner. For an accepted batch,
-launch every ready node concurrently, then use one long wait. Do not wait
-worker-by-worker. Queue later dependencies as a new stage. Compare observed
-critical-path time with a single-Luna estimate; parallelism is a latency
-optimization only when quality remains non-inferior.
+Luna follows `discover -> implement -> focused verify -> correct -> final verify
+-> report`. Group reads; do not reread unchanged files, branch, or commit unless
+required. Run each verifier once per candidate state and an unchanged failure
+never twice. After verification/diff audit, report. Wait >=30 seconds on long
+commands, never one-second poll. Incomplete evidence at a ceiling is `BLOCKED` /
+`budget`.
 
-## 5. Ownership ledger
+Use `PYTHONDONTWRITEBYTECODE=1` unless bytecode is under test. Evaluation isolation
+forbids sibling worktrees, candidate solutions, hidden tests, prior trajectories,
+benchmark output, and harness state. Worker PASS is a leaf bound to commands,
+statuses, paths, Requirement coverage, and final SHA256 identities.
 
-Every task has one owner. The ledger contains:
+## 6. Deterministic candidate persistence
 
-```text
-Task ID
-Mode: Single Executor | Coordinated Leaf
-Requirement IDs
-Owner profile
-Dependencies
-Read scope
-Write scope
-Do not touch
-Baseline
-Chosen solution
-Decisive observations
-Verification
-Authorization boundary
-Stop conditions
-Status
-```
-
-Two live tasks must never own the same file or shared generated consequence.
-The controller may transfer ownership only before writes or after the prior
-owner returns a complete final-candidate capsule. Luna must not silently widen
-`write_scope`.
-
-## 6. Launch packet and context isolation
-
-Every worker launches with `fork_turns="none"`. The packet contains Requirement
-IDs, chosen solution, decisive observations, exact scopes, baseline, verifier,
-authorization, and stop conditions. It excludes the full Sol transcript,
-generic process prose, unrelated repository listings, and duplicate evidence.
-
-This compact boundary is the token-saving invariant: Sol pays once for semantic
-exploration; Luna receives only the executable result. It also prevents the
-executor from independently repeating open-ended solution search.
-
-Before writes, Luna verifies the decisive observations. Return
-`REPLAN_NEEDED` when:
-
-- a decisive observation is false or stale;
-- the solution cannot satisfy an owned requirement;
-- a required file lies outside `write_scope`;
-- the verifier is invalid or targets the wrong artifact;
-- a new critical risk or authorization question appears.
-
-`REPLAN_NEEDED` is not permission to redesign. It returns control to the same
-Sol controller with compact evidence.
-
-## 7. Execution and local verification
-
-Luna executes the chosen solution, preserves unrelated changes, verifies the
-verifier, audits its complete owned diff, and corrects bounded failures. Every
-check must be bound to the final candidate. A changed candidate makes earlier
-behavior evidence stale unless the check is independent of that change.
-
-All Python verification uses `PYTHONDONTWRITEBYTECODE=1` unless bytecode is under
-test. Evaluation isolation forbids reading sibling worktrees, candidate
-solutions, hidden tests, prior benchmark outputs, or evaluation harness state
-unless the user explicitly authorizes them.
-
-Worker terminal status is `PASS | REPLAN_NEEDED | BLOCKED`. A worker PASS is a
-leaf result, never the overall verdict. Require exact commands, exit status,
-results, changed paths, and final hashes. File existence and exit zero alone are
-not evidence when the command targets the wrong behavior.
-
-## 8. Deterministic persistence
-
-Require `Delivery: VISIBLE_CANDIDATE` when `Changed` is non-empty. Compare the
-active candidate with the worker's opaque paths and final SHA-256 identities,
-then invoke:
+Require `VISIBLE_CANDIDATE`, exact paths, and hashes already visible in the
+controller's active workspace through shared semantics or official transport.
+Validate them directly; an optional read-only replayability check is:
 
 ```text
-scripts/persist-visible-candidate.sh --workspace <absolute-workspace>
+scripts/persist-visible-candidate.sh --workspace <absolute-workspace> -- <exact-relative-path>...
 ```
 
-The script snapshots and replays the Git-visible binary diff and emits one
-`PERSISTED` identity per path. The output set and hashes must exactly match the
-worker record. Missing visibility, a non-Git root, unsupported paths, changed
-identities, or replay failure is `BLOCKED` / `Failure class: runtime`.
+The script never discovers paths, transfers an isolated candidate, or mutates
+the worktree. Its complete `PERSISTED` set must match. An isolated-only candidate
+without deterministic transport, missing visibility, hash mismatch, or replay
+failure is runtime `BLOCKED`; never ask an LLM to reconstruct a patch.
 
-The Host does not reread file contents during deterministic candidate
-persistence. Paths, hashes, and the replay verdict are transport evidence, not
-semantic review. Never reconstruct a missing patch with an LLM.
+## 7. Sol final review and bounded repair
 
-## 9. Aggregate and final review
+The same Sol inspects real files as needed, complete diff, Requirement coverage,
+and fresh evidence. Verify the verifier; rerun a trusted pass only for a concrete
+freshness, coverage, or environment gap.
 
-After a parallel stage, build the union manifest in deterministic Task-ID order
-and prove disjoint ownership. Persist the union once. The same Sol controller
-then inspects the real active-workspace files, complete diff, requirement graph,
-and evidence.
+Return `Verdict: PASS | FIX | BLOCKED`. Only Sol can issue overall PASS. Permit
+one focused `FIX` total to the same Luna owner and at most one replan, each using
+the remaining envelope and followed by fresh persistence/review. A further miss,
+scope expansion, or solution change is `BLOCKED`; budgets never reset.
 
-The controller must verify:
+Use `air-challenger` only for an explicit independent review or one unresolved
+high-consequence falsification question. It returns findings, never approval.
+Critical AIR additionally requires explicit safety invariants, authorization,
+rollback conditions, and rollback verification; cost cannot relax them.
 
-- every Requirement ID maps to final-candidate evidence;
-- all changed paths are authorized and all baseline user changes are preserved;
-- implementation matches the selected solution and repository conventions;
-- the verifier executes the intended behavior against the final artifact;
-- no worker assumption hides an interface, security, migration, or integration
-  error;
-- residual risk is named accurately.
+## 8. Continuity
 
-Return `Verdict: PASS | FIX | BLOCKED`. Only Sol can issue overall PASS.
-
-`FIX` identifies one Task ID and one focused delta. Return it to the same Luna
-owner, persist the corrected candidate, and repeat Sol review. Permit one
-focused correction. A second material miss, scope expansion, or solution change
-returns to Planning; never create an unbounded review loop.
-
-## 10. Independent challenge
-
-`air-challenger` is a read-only Sol xhigh exception, not a normal second review.
-Use it only for explicit independent-review requests, materially conflicting
-critical evidence, or high-consequence semantics with no falsifiable verifier.
-Send a compact question, Requirement IDs, candidate identity, complete relevant
-diff, and evidence. It returns findings, not approval.
-
-## 11. Critical authorization
-
-Critical AIR uses `air-critical-controller` from entry. It retains the same Sol
-control/Luna execution split, adds explicit rollback and safety verification,
-and never lets cost override authorization. If critical risk appears after
-writes, stop further mutation, preserve the candidate and evidence, and return
-`BLOCKED` or request user authority as appropriate.
-
-## 12. Runtime continuity
-
-Use one long wait (`timeout_ms=3600000` where supported); it returns early on
-completion. Do not poll repository state or emit unchanged progress messages.
-If the user interrupts, handle the input and resume the same live owner. A
-transport-truncated result permits one result-only follow-up to that owner. It
-does not authorize new work, writes, Host-side semantic reconstruction, or a new
-controller.
-
-On context compaction, preserve a compact resume packet containing controller
-identity proof, Requirement graph, ownership ledger, baseline, exact candidate
-identity, terminal worker records, verification freshness, authorization, and
-next action. Do not copy the full transcript.
+Wait event-driven until completion, deadline, or authoritative cap; interrupt
+once, preserve visible work, and do not retry. Without telemetry, priced/tool
+caps are projected/cooperative; deadline and launches are mechanical. User
+interruption may resume the owner within the unchanged envelope. One truncated
+result-only follow-up is allowed. On compaction keep
+controller proof, requirements, ownership, baseline, candidate/evidence,
+authorization, remaining budget, and next action—not the transcript.

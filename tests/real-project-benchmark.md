@@ -2,6 +2,12 @@
 
 Date: 2026-08-02
 
+> **Historical evidence only.** This benchmark predates the current Codex AIR
+> Sol-control/Luna-execution architecture. Its Terra-inclusive routing and
+> scenario prices are not current guidance. Use
+> [`docs/evidence/README.md`](../docs/evidence/README.md) for the current
+> evidence ledger and claim boundaries.
+
 ## Method
 
 Existing completed evidence was inspected first. New probes were allowed only
@@ -35,13 +41,13 @@ sample reached `PASS` with verification evidence. The infrastructure sample
 remained Direct and created zero Luna work, demonstrating that the benchmark
 does not assume every real task should be delegated.
 
-## Current cost result
+## Historical scenario cost model
 
-The current public model uses relative subscription-credit weights rather than
+The historical model used relative subscription-credit weights rather than
 claiming a measured A/B saving: Sol = **1**, Terra High = **0.5**, and Luna Max
-= **0.05**. The rate card was checked again on 2026-08-24. API dollars and
-subscription credits are separate accounting units; the exact API and credit
-rows remain documented in the bilingual README.
+= **0.05**. Those inputs are frozen for reproduction; they do not describe the
+current Terra=0 architecture. API dollars and subscription credits are
+separate accounting units.
 
 The scenario/model projection is published as ranges, not as a single direct
 task promise:
@@ -51,9 +57,9 @@ task promise:
 - complex Sol/Terra/Luna routing: **27.2%-37.2%**;
 - equal-scenario composite center: approximately **51.6%**.
 
-These are scenario/model projections from official rates and declared routing assumptions,
-not a newly measured matched A/B experiment. No complex **65%** direct
-saving or Luna=Sol **1/25** ratio is treated as the current public contract.
+These are historical scenario/model projections from then-declared routing
+assumptions, not a newly measured matched A/B experiment. No complex **65%**
+direct saving or Luna=Sol **1/25** ratio is a current public contract.
 
 ## Privacy and limitations
 

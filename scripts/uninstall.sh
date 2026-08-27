@@ -2,14 +2,22 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+usage() {
+  printf 'Usage: uninstall.sh [--restore-latest] [--help]\n'
+  printf 'Remove the checksum-verified Codex AIR install; optionally restore its latest backup.\n'
+}
+
 restore_latest=0
 if (( $# > 1 )); then
-  printf 'Usage: uninstall.sh [--restore-latest]\n' >&2
+  usage >&2
   exit 1
 fi
 if (( $# == 1 )); then
-  [[ "$1" == --restore-latest ]] || { printf 'Usage: uninstall.sh [--restore-latest]\n' >&2; exit 1; }
-  restore_latest=1
+  case "$1" in
+    --restore-latest) restore_latest=1 ;;
+    -h|--help) usage; exit 0 ;;
+    *) usage >&2; exit 1 ;;
+  esac
 fi
 
 die() {

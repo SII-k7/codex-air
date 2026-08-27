@@ -22,9 +22,9 @@ body:
   - type: input
     id: version
     attributes:
-      label: Version or commit
-      description: Provide the release tag or commit SHA you tested.
-      placeholder: v1.1.2
+      label: Codex AIR version or commit
+      description: Provide the value from VERSION for a release checkout, or the full commit SHA for main.
+      placeholder: vX.Y.Z or full commit SHA
     validations:
       required: true
   - type: dropdown
@@ -81,8 +81,11 @@ body:
   - type: textarea
     id: evidence
     attributes:
-      label: Redacted evidence
-      description: Include exact commands, exit codes, or logs after removing sensitive data.
-      render: shell
+      label: Redacted diagnostics
+      description: Paste the failing command and exit code, then paste or drag in redacted output. When applicable, include scripts/doctor.sh --json on macOS/Linux or scripts/doctor.ps1 -Json on Windows.
+      placeholder: |
+        Command:
+        Exit code:
+        Relevant output (redacted):
     validations:
       required: true

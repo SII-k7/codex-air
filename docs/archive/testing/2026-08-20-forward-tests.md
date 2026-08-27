@@ -1,3 +1,5 @@
+> **Archived historical test contract.** This is provenance, not the current Codex AIR contract. Its Lean/Full/Parallel route names, `controller: none` cases, and routing expectations describe the 2026-08-20 test architecture and must not be used to infer v1.2 behavior. See the [maintained runtime contract](../../../.agents/skills/codex-air/SKILL.md) instead.
+
 # Tiered-routing Forward Tests
 
 Date: 2026-08-20
@@ -7,7 +9,7 @@ repository, global agent file, or live production system is read or modified.
 
 ## Method
 
-- The forty-three scenarios are defined in `tests/fixtures/forward-cases.json`.
+- The forty-three scenarios are preserved in the [archived fixture](2026-08-20-forward-cases.json).
 - Each case describes the expected route without exposing internal runtime
   mechanics beyond the documented Parallel AIR bound of two or three leaves.
 - Contract tests check explicit invocation, direct handling of ordinary simple
@@ -112,7 +114,7 @@ The ownership-transfer tests preserve a pre-fix RED proof and a post-fix GREEN
 regression: the allowed case has zero efficient-worker-owned writes before the first
 failure, while the forbidden case has at least one write and keeps ownership
 with the efficient worker. Syntax and environment failures are not an acceptable substitute.
-The earlier v0.4 RED evidence remains in `tests/fixtures/v040-baseline-red.md`.
+The earlier v0.4 RED evidence remains in the [archived baseline fixture](../../../tests/fixtures/v040-baseline-red.md).
 
 Parallel AIR's two-to-three-leaf protocol bound is public. Live capacity,
 dependency readiness, and the quantified latency gate still decide whether a

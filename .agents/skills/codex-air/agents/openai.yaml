@@ -1,6 +1,9 @@
 interface:
   display_name: "Codex AIR"
-  short_description: "Sol plans and reviews; Luna Max Fast executes."
-  default_prompt: "使用 $codex-air，让 Sol 完成理解、探索、拆解与终审，让 Luna Max Fast 执行和验证。"
+  short_description: "Sol plans and reviews; Luna executes with Fast requested."
+  icon_small: "./assets/icon-small.svg"
+  icon_large: "./assets/icon-large.svg"
+  brand_color: "#0F766E"
+  default_prompt: "Use $codex-air so Sol can understand, plan, and review while Luna Max implements and verifies with Fast requested."
 policy:
   allow_implicit_invocation: false

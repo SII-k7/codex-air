@@ -35,6 +35,8 @@ required_files=(
   ".agents/skills/codex-air/scripts/persist-visible-candidate.sh"
   ".agents/skills/codex-air/SKILL.md"
   ".agents/skills/codex-air/agents/openai.yaml"
+  ".agents/skills/codex-air/assets/icon-small.svg"
+  ".agents/skills/codex-air/assets/icon-large.svg"
   ".codex/agents/air-controller.toml"
   ".codex/agents/air-critical-controller.toml"
   ".codex/agents/air-complex-worker.toml"
@@ -46,11 +48,15 @@ required_files=(
   "scripts/doctor.sh"
   "scripts/default.sh"
   "scripts/benchmark_ab.py"
+  "scripts/microbench.py"
   "scripts/uninstall.sh"
   "scripts/install.ps1"
   "scripts/validate.ps1"
   "scripts/uninstall.ps1"
+  "scripts/doctor.ps1"
+  "scripts/default.ps1"
   "README.md"
+  "README.zh-CN.md"
   "README.en.md"
   "CHANGELOG.md"
   "CONTRIBUTING.md"
@@ -71,14 +77,18 @@ required_files=(
   "docs/ubuntu-cli-install.md"
   "docs/prompt-recipes.md"
   "tests/windows-lifecycle.ps1"
-  "tests/fixtures/forward-cases.json"
   "tests/fixtures/v100-ab-benchmark.json"
   "tests/fixtures/deepswe-v11-ab.json"
+  "tests/fixtures/microbench-v1.json"
+  "tests/fixtures/microbench-screen-20260827.json"
   "tests/deepswe-v11-ab.md"
+  "tests/deepswe-v11-microbench.md"
   "tests/v100-ab-benchmark.md"
   "tests/v100-live-smoke.md"
   "tests/test_v100_benchmark.py"
   "tests/test_v100_evidence_control.py"
+  "tests/test_hard_benchmark_protocol.py"
+  "tests/test_microbench.py"
   "tests/test_default_routing.py"
   "CODEX_AIR_V1_IMPLEMENTATION_REPORT.md"
   "NOTICE"
@@ -177,24 +187,37 @@ skill_text = text(skill_path)
 contract_text = text(canonical / "references/orchestration.md")
 runtime_text = text(canonical / "references/runtime-notes.md")
 combined = "\n".join((skill_text, contract_text, runtime_text))
+normalized_combined = " ".join(combined.split()).lower()
 for marker in (
     "Planning", "Routing", "Ownership", "Verification", "Evidence",
-    "Sol xhigh", "Luna Max Fast", "Terra is forbidden", "Mode: Single Executor",
+    "Sol xhigh", "Fast requested", "actual tier", "Terra is forbidden", "Mode: Single Executor",
     "deterministic candidate persistence", "persist-visible-candidate.sh", "VISIBLE_CANDIDATE", "Final file SHA256",
-    "timeout_ms=3600000", "PYTHONDONTWRITEBYTECODE=1", "evaluation isolation",
+    "hard wall time", "PYTHONDONTWRITEBYTECODE=1", "evaluation isolation",
     "explicit", "Requirement ID", "write_scope",
     "one owner", "live capacity", "Native Nested", "Compatibility",
     "fork_turns=\"none\"", "Fail Closed", "PASS | FIX | BLOCKED",
     "Status: PASS | REPLAN_NEEDED | BLOCKED", "one Sol semantic controller",
-    "verify the verifier", "result-only", "resume packet", "Direct", "Controlled AIR",
+    "verify the verifier", "result-only", "remaining budget", "Run envelope", "Critical In-Place",
+    "exact-relative-path", "Direct", "Controlled AIR",
     "air-controller", "air-critical-controller", "air-complex-worker", "air-efficient-worker", "air-challenger",
 ):
-    if marker.lower() not in combined.lower():
+    if " ".join(marker.split()).lower() not in normalized_combined:
         stop()
 
 openai_text = text(canonical / "agents/openai.yaml")
 if "$codex-air" not in openai_text or not re.search(r"(?m)^\s*allow_implicit_invocation:\s*false\s*$", openai_text):
     stop()
+for marker in (
+    'icon_small: "./assets/icon-small.svg"',
+    'icon_large: "./assets/icon-large.svg"',
+    'brand_color: "#0F766E"',
+):
+    if marker not in openai_text:
+        stop()
+for icon_name in ("icon-small.svg", "icon-large.svg"):
+    icon = canonical / "assets" / icon_name
+    if not icon.is_file() or icon.stat().st_size >= 5_000 or "<svg" not in text(icon):
+        stop()
 compat_text = text(compat / "SKILL.md") + "\n" + text(compat / "agents/openai.yaml")
 if "$codex-prove" not in compat_text or "$codex-air" not in compat_text:
     stop()
@@ -284,7 +307,14 @@ if luna_profiles != ["air-complex-worker.toml", "air-efficient-worker.toml"]:
 hard_benchmark = json.loads(text(root / "tests/fixtures/deepswe-v11-ab.json"))
 if hard_benchmark.get("status") != "FROZEN_NOT_RUN":
     stop()
+if hard_benchmark.get("evidence_class") != "prospective_protocol_only" or hard_benchmark.get("architecture_version") != "1.2":
+    stop()
 if hard_benchmark.get("source", {}).get("task_count") != 113:
+    stop()
+arms = hard_benchmark.get("arms", {})
+if "sol / xhigh / default" not in arms.get("direct", "") or "Fast requested" not in arms.get("air", ""):
+    stop()
+if arms.get("terra") != "zero calls and zero tokens":
     stop()
 evidence = hard_benchmark.get("frontier_difficulty_evidence", {})
 if evidence.get("gpt_5_6_sol_max_percent", 100) >= 100:
@@ -372,6 +402,10 @@ PY
   fi
 fi
 
+if [[ -n "$PYTHON_BIN" ]] && ! "$PYTHON_BIN" "$ROOT_DIR/scripts/microbench.py" validate "$ROOT_DIR/tests/fixtures/microbench-v1.json" >/dev/null 2>&1; then
+  fail 'low-credit microbenchmark validation failed'
+fi
+
 if command -v ruby >/dev/null 2>&1; then
   if ! ruby -r yaml - "$SKILL_FILE" "$OPENAI_FILE" "$COMPAT_SKILL_FILE" "$COMPAT_OPENAI_FILE" <<'RUBY' >/dev/null 2>&1
 paths = ARGV
@@ -421,9 +455,11 @@ if [[ -n "$PWSH_BIN" ]]; then
   if ! PS1_INSTALL_PATH="$SCRIPT_DIR/install.ps1" \
     PS1_VALIDATE_PATH="$SCRIPT_DIR/validate.ps1" \
     PS1_UNINSTALL_PATH="$SCRIPT_DIR/uninstall.ps1" \
+    PS1_DOCTOR_PATH="$SCRIPT_DIR/doctor.ps1" \
+    PS1_DEFAULT_PATH="$SCRIPT_DIR/default.ps1" \
     PS1_LIFECYCLE_PATH="$WINDOWS_LIFECYCLE_FILE" \
     "$PWSH_BIN" -NoLogo -NoProfile -NonInteractive -Command '
-      foreach ($path in @($env:PS1_INSTALL_PATH, $env:PS1_VALIDATE_PATH, $env:PS1_UNINSTALL_PATH, $env:PS1_LIFECYCLE_PATH)) {
+      foreach ($path in @($env:PS1_INSTALL_PATH, $env:PS1_VALIDATE_PATH, $env:PS1_UNINSTALL_PATH, $env:PS1_DOCTOR_PATH, $env:PS1_DEFAULT_PATH, $env:PS1_LIFECYCLE_PATH)) {
         $tokens = $null; $errors = $null
         [System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$tokens, [ref]$errors) | Out-Null
         if ($errors.Count -gt 0) { exit 1 }

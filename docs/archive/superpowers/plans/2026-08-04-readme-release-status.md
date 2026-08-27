@@ -1,3 +1,5 @@
+> **Archived historical plan.** This is provenance, not current routing or implementation guidance. Use the [documentation index](../../../README.md) for maintained instructions.
+
 # README Release Status Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
@@ -64,7 +66,7 @@ the Control Orbit image in `README.md`:
 | 托管 CI | POSIX **PASS**；Windows Server 2022 / `windows-latest` × Windows PowerShell 5.1 / PowerShell 7 **PASS** |
 | 编排模式 | **Compatibility 已验证**；Native Nested、全新 CLI child model/effort 身份与物理 Windows 11 尚未证明 |
 
-证据绑定报告提交 `6895f06`：[POSIX CI](https://github.com/yehyakin/codex-sol-luna/actions/runs/30858707335) · [Windows CI](https://github.com/yehyakin/codex-sol-luna/actions/runs/30858707364) · [完整实施报告](ORCHESTRATE_SOL_LUNA_V2_IMPLEMENTATION_REPORT.md)
+证据绑定到历史报告提交 `6895f06`；对应的 POSIX 与 Windows CI 均通过。
 ```
 
 - [ ] **Step 2: Add the English peer block**
@@ -80,7 +82,7 @@ Insert this exact block in the matching position in `README.en.md`:
 | Hosted CI | POSIX **PASS**; Windows Server 2022 / `windows-latest` × Windows PowerShell 5.1 / PowerShell 7 **PASS** |
 | Orchestration mode | **Compatibility verified**; Native Nested, fresh-CLI child model/effort identity, and physical Windows 11 remain unproven |
 
-Evidence is bound to report commit `6895f06`: [POSIX CI](https://github.com/yehyakin/codex-sol-luna/actions/runs/30858707335) · [Windows CI](https://github.com/yehyakin/codex-sol-luna/actions/runs/30858707364) · [full implementation report](ORCHESTRATE_SOL_LUNA_V2_IMPLEMENTATION_REPORT.md)
+Evidence was bound to historical report commit `6895f06`; its POSIX and Windows CI runs passed.
 ```
 
 - [ ] **Step 3: Run the focused test and confirm GREEN**

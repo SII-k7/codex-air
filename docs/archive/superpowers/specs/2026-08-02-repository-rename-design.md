@@ -1,3 +1,5 @@
+> **Archived historical design.** This is provenance, not current routing or implementation guidance. Use the [documentation index](../../../README.md) for maintained instructions.
+
 # Repository rename design
 
 ## Decision
@@ -13,8 +15,8 @@ two-role design.
 
 | Surface | Current | Target |
 | --- | --- | --- |
-| GitHub repository | `yehyakin/codex-sol-luna-orchestrator` | `yehyakin/codex-sol-luna` |
-| Local source checkout | `/Users/kin3/Projects/codex-sol-luna-orchestrator` | `/Users/kin3/Projects/codex-sol-luna` |
+| GitHub repository | historical long name | historical short name |
+| Local source checkout | old checkout directory | renamed checkout directory |
 | Git remote | old GitHub URL | new GitHub URL |
 | README title | `Sol Luna` | unchanged |
 | Skill invocation | `$sol-luna` | unchanged |
@@ -60,7 +62,7 @@ two-role design.
 
 ## Safety and rollback
 
-- Stop if `yehyakin/codex-sol-luna` already exists or GitHub refuses the rename.
+- Stop if the historical target repository already exists or GitHub refuses the rename.
 - Stop if the worktree is dirty outside the approved documentation changes.
 - Record commit and tag IDs before the external rename; repository identity must
   not change those objects.

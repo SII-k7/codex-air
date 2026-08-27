@@ -9,8 +9,8 @@ not committed to this repository.
 
 ## Decision
 
-The current Codex AIR architecture passes the aggregate cost gate but fails the
-quality and latency gates:
+The historical v1.0 Codex AIR architecture passed the aggregate cost gate but
+failed the quality and latency gates:
 
 - Direct: 2/10 resolved, mean partial 0.8943, median 20.3 minutes, 919.34 credits.
 - AIR: 1/10 resolved, mean partial 0.8932, median 23.2 minutes, 358.83 credits.
@@ -21,9 +21,9 @@ quality and latency gates:
 The two AIR quality losses were Termenv (partial 0.9426 versus 0.9672) and Kea
 (AIR missed strict resolution while Direct resolved). The clearest AIR success
 was SQLFmt: higher partial, 17.2% of Direct cost, and 32.6% less time. The next
-optimization should therefore preserve Luna-first routing while adding a Direct
-admission path for short tasks, a bounded evidence-triggered Sol review for
-final test gaps, and a worker wall-time/tool-cycle budget with early exit.
+architecture iteration therefore added Direct admission for short tasks, Sol
+semantic control and final review, and a worker wall-time/tool-cycle budget.
+This v1.0 result does not evaluate the later v1.2 implementation.
 
 ## Complete paired result
 

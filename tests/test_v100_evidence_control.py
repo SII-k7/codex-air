@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Historical benchmark integrity plus v1.1 evidence-control boundaries."""
+"""Historical benchmark integrity plus current evidence-control boundaries."""
 
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RESULT = ROOT / "tests" / "deepswe-v11-hardest10-results.md"
 MANIFEST = ROOT / "tests" / "fixtures" / "v100-ab-benchmark.json"
+MICROBENCH = ROOT / "tests" / "deepswe-v11-microbench.md"
+PUBLIC_READMES = (ROOT / "README.md", ROOT / "README.zh-CN.md")
 
 
 def read(path: Path) -> str:
@@ -42,26 +44,42 @@ class HistoricalEvidenceTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
-    def test_readmes_label_v100_as_historical_and_v11_as_unbenchmarked(self) -> None:
-        for name in ("README.md", "README.en.md"):
-            text = read(ROOT / name)
+    def test_readmes_separate_v100_history_invalid_v12_screen_and_unrun_rerun(self) -> None:
+        for path in PUBLIC_READMES:
+            text = read(path)
             self.assertRegex(text, r"(?i)historical|历史")
-            self.assertRegex(text, r"(?i)not yet|尚未")
-            self.assertIn("61", text)
-            self.assertIn("3.17", text)
+            for marker in ("v1.0", "BUDGET_ABORTED", "INVALID", "66.85", "39.7%", "1.198", "170", "3.17"):
+                self.assertIn(marker, text, path.name)
+            self.assertRegex(text, r"(?i)NOT RUN|未运行")
+
+    def test_v12_screen_is_budget_aborted_invalid_diagnostic_only(self) -> None:
+        text = read(MICROBENCH)
+        for marker in (
+            "66.85 of the 70-credit cap",
+            "invalid and unscored",
+            "39.7%",
+            "1.198",
+            "170 tool calls",
+            "Short polls and Terra usage were zero",
+            "actual Fast tier was unobserved",
+            "`BUDGET_ABORTED`",
+        ):
+            self.assertIn(marker, text)
+        self.assertNotIn("The result is `PASS`", text)
 
 
-class V11EvidenceControlTests(unittest.TestCase):
+class V12EvidenceControlTests(unittest.TestCase):
     def test_final_review_uses_real_artifacts_and_verifier(self) -> None:
         skill = read(ROOT / ".agents" / "skills" / "codex-air" / "SKILL.md")
+        normalized = " ".join(skill.casefold().split())
         for marker in (
             "real final files",
-            "complete in-scope diff",
+            "the complete in-scope diff",
             "Requirement coverage",
-            "verify the verifier",
+            "must verify the verifier",
             "Verdict: PASS | FIX | BLOCKED",
         ):
-            self.assertIn(marker.casefold(), skill.casefold())
+            self.assertIn(marker.casefold(), normalized)
 
     def test_worker_pass_cannot_be_overall_pass(self) -> None:
         for name in ("air-efficient-worker.toml", "air-complex-worker.toml"):
@@ -70,10 +88,11 @@ class V11EvidenceControlTests(unittest.TestCase):
             self.assertIn("VISIBLE_CANDIDATE", text)
             self.assertIn("Final file SHA256", text)
 
-    def test_v11_todo_freezes_rerun_quality_cost_and_latency_gates(self) -> None:
+    def test_v12_todo_keeps_low_credit_and_matched_rerun_gates(self) -> None:
         todo = read(ROOT / "TODO.md")
         for marker in (
-            "v1.1 Sol-control / Luna-execution matched rerun",
+            "v1.2 low-credit iteration gate",
+            "Sol-control / Luna-execution matched rerun",
             "Terra calls and tokens must remain zero",
             "1,800-credit absolute cap",
             "0.85–1.15",
@@ -83,11 +102,18 @@ class V11EvidenceControlTests(unittest.TestCase):
         ):
             self.assertIn(marker, todo)
 
-    def test_runtime_matrix_does_not_claim_v11_live_proof(self) -> None:
+    def test_runtime_matrix_does_not_promote_invalid_or_historical_runs(self) -> None:
         matrix = read(ROOT / "docs" / "release" / "runtime-surface-matrix.md")
-        self.assertIn("Controlled AIR route", matrix)
-        self.assertIn("UNVERIFIED", matrix)
-        self.assertIn("v1.1 has not been rerun", matrix)
+        for marker in (
+            "BUDGET_ABORTED / INVALID",
+            "Candidate files and partial telemetry are diagnostic only",
+            "v1.2 DeepSWE hardest-10 matched A/B",
+            "NOT RUN",
+            "v1.0 DeepSWE hardest-10 matched A/B",
+            "RETAINED HISTORICAL",
+            "does not establish quality equivalence",
+        ):
+            self.assertIn(marker, matrix)
 
 
 if __name__ == "__main__":

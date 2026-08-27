@@ -1,3 +1,5 @@
+> **Archived historical plan.** This is provenance, not current routing or implementation guidance. Use the [documentation index](../../../README.md) for maintained instructions.
+
 # v0.3.0 Windows, README, and Cost Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `$sol-luna`. Sol owns the stage graph, file ownership, and review. Luna Max workers execute only the bounded packets below and return exact evidence.
@@ -191,7 +193,7 @@ Use this order: language navigation, hero, one-sentence value, quickstart,
 architecture, use/not-use, runtime identities, stages and ownership, platform
 matrix, install/validate/uninstall/restore, fail-closed safety, cost, repository
 layout, validation, limitations, prior art, license. Use the canonical target
-URL `https://github.com/yehyakin/codex-sol-luna` for current links.
+the historical canonical repository URL for then-current links.
 
 - [ ] **Step 3: Create full Chinese parity**
 
@@ -261,7 +263,7 @@ variable value, user config, or temporary-home content.
 ```bash
 bash scripts/validate.sh
 /opt/homebrew/bin/python3.13 -m unittest discover -s tests -v
-python3 /Users/kin3/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/sol-luna
+python3 <skill-creator-checkout>/scripts/quick_validate.py .agents/skills/sol-luna
 git diff --check
 ```
 
@@ -295,14 +297,14 @@ bounded `FIX`, or `BLOCKED`. Do not perform the rename on `FIX` or `BLOCKED`.
 
 Record GitHub repository ID, default branch, `main` SHA, current branch SHA,
 and dereferenced `v0.1.0` and `v0.2.0` SHAs. Confirm
-`yehyakin/codex-sol-luna` does not already exist. Confirm official prices still
+the historical target repository does not already exist. Confirm official prices still
 match the README or update the docs through their existing owner and rerun all
 gates.
 
 - [ ] **Step 3: Rename without history rewriting**
 
 Rename the GitHub repository, update `origin`, fetch, and compare all recorded
-IDs and refs. Move the checkout to `/Users/kin3/Projects/codex-sol-luna` only
+IDs and refs. Move the checkout to its planned local destination only
 after the new canonical URL resolves. Verify the old URL redirects. Never
 force-push, rewrite a tag, or delete the old checkout as recovery logic.
 
@@ -321,7 +323,7 @@ discovery, and Sol `PASS`:
 ```bash
 git tag -a v0.3.0 -m "codex-sol-luna v0.3.0"
 git push origin main v0.3.0
-gh release create v0.3.0 --repo yehyakin/codex-sol-luna --verify-tag --title "codex-sol-luna v0.3.0" --notes-from-tag
+gh release create v0.3.0 --repo <historical-repository> --verify-tag --title "codex-sol-luna v0.3.0" --notes-from-tag
 ```
 
 Expected: `main`, `origin/main`, and `v0.3.0^{}` resolve to the same commit;

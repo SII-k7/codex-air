@@ -1,8 +1,10 @@
+> **Archived historical design.** This is provenance, not current routing or implementation guidance. Use the [documentation index](../../../README.md) for maintained instructions.
+
 # v0.3.0 Windows, documentation, and cost design
 
 ## Goal
 
-Release `v0.3.0` as `yehyakin/codex-sol-luna`: keep the two-role runtime
+Release `v0.3.0` from the historical predecessor repository: keep the two-role runtime
 unchanged, complete the Windows lifecycle, publish equivalent English and
 Simplified Chinese documentation with repository-owned artwork, and explain
 the economic benefit of assigning bounded execution to Luna without making a
@@ -31,7 +33,7 @@ The Skill remains `$sol-luna`; the agents remain `sol-controller` and
 
 - Rename the GitHub repository from `codex-sol-luna-orchestrator` to
   `codex-sol-luna` after implementation and validation are complete.
-- Move the local checkout to `/Users/kin3/Projects/codex-sol-luna` only after
+- Move the local checkout to its planned destination only after
   the remote rename is verified.
 - Preserve repository identity, history, `main`, and existing tags.
 - Update current links and names; retain the old name only in historical or

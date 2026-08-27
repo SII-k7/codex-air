@@ -1,3 +1,5 @@
+> **Archived historical plan.** This is provenance, not current routing or implementation guidance. Use the [documentation index](../../../README.md) for maintained instructions.
+
 # README Control Orbit Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
@@ -27,7 +29,7 @@
 - Modify `tests/test_contract.py`: update the required repository/install surface.
 - Modify `tests/test_installers.py`: update installed-file expectations.
 - Remove the four superseded `docs/assets/sol-luna-*.svg` files only after preview approval and only after confirming no references remain.
-- Create a temporary preview under `/Users/kin3/.codex/visualizations/2026/08/01/019fbd2b-f26c-7c13-929a-f396a14af022/`; do not commit it.
+- Create a preview in a repository-external temporary directory; do not commit it.
 
 ### Task 1: Add the SVG Contract
 
@@ -168,7 +170,7 @@ git commit -m "docs: add bilingual control orbit visuals"
 
 **Files:**
 - Read: `docs/assets/readme/*.svg`
-- Create outside repository: `/Users/kin3/.codex/visualizations/2026/08/01/019fbd2b-f26c-7c13-929a-f396a14af022/readme-control-orbit-preview.html`
+- Create outside the repository: `<temporary-preview-directory>/readme-control-orbit-preview.html`
 - Create outside repository: rendered PNG derivatives under a temporary directory.
 
 - [ ] **Step 1: Render all SVGs to PNG**
@@ -383,8 +385,8 @@ git commit -m "chore: align installers with README assets"
 Run from the temporary `beautify-github-readme` checkout:
 
 ```bash
-python3 /tmp/beautify-readme.30addO/repo/skills/beautify-github-readme/scripts/audit_readme.py README.md
-python3 /tmp/beautify-readme.30addO/repo/skills/beautify-github-readme/scripts/audit_readme.py README.en.md
+python3 <readme-audit-checkout>/scripts/audit_readme.py README.md
+python3 <readme-audit-checkout>/scripts/audit_readme.py README.en.md
 ```
 
 Expected: both audits report `OK`.

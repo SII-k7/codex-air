@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Public README contracts for the v1.1 architecture and claims."""
+"""Adoption-entry contracts for the v1.2 public READMEs."""
 
 from __future__ import annotations
 
@@ -10,7 +10,10 @@ from urllib.parse import unquote
 
 
 ROOT = Path(__file__).resolve().parents[1]
-READMES = (ROOT / "README.md", ROOT / "README.en.md")
+CANONICAL = ROOT / "README.md"
+CHINESE = ROOT / "README.zh-CN.md"
+COMPATIBILITY = ROOT / "README.en.md"
+PUBLIC_READMES = (CANONICAL, CHINESE)
 
 
 def read(path: Path) -> str:
@@ -18,123 +21,144 @@ def read(path: Path) -> str:
 
 
 class ReadmeContractTests(unittest.TestCase):
-    def test_bilingual_readmes_start_with_language_switches(self) -> None:
-        for path in READMES:
-            self.assertTrue(read(path).startswith("[简体中文](README.md) · [English](README.en.md)"))
+    def test_english_is_canonical_chinese_is_localized_and_old_english_redirects(self) -> None:
+        switch = "[English](README.md) · [简体中文](README.zh-CN.md)"
+        self.assertTrue(read(CANONICAL).startswith(switch))
+        self.assertTrue(read(CHINESE).startswith(switch))
+
+        compatibility = read(COMPATIBILITY)
+        self.assertTrue(compatibility.startswith("[Canonical English README](README.md)"))
+        self.assertIn("# English README moved", compatibility)
+        self.assertIn("existing `README.en.md` links continue to work", compatibility)
+        self.assertLessEqual(len(compatibility.splitlines()), 12)
 
     def test_architecture_has_bilingual_signal_parity(self) -> None:
-        zh, en = (read(path) for path in READMES)
-        for marker in ("Sol", "xhigh", "Luna Max Fast", "Terra", "fork_turns", "REQ-ID", "REPLAN_NEEDED"):
-            self.assertIn(marker, zh)
-            self.assertIn(marker, en)
-        self.assertIn("Terra 不参与任何 AIR 路由", zh)
-        self.assertIn("Terra appears in no AIR route", en)
+        english, chinese = (read(path) for path in PUBLIC_READMES)
+        for marker in (
+            "Sol",
+            "xhigh",
+            "Luna",
+            "max",
+            "Fast",
+            "Terra",
+            'fork_turns="none"',
+            "REPLAN_NEEDED",
+            "BLOCKED",
+            "$codex-air",
+            "$codex-prove",
+        ):
+            self.assertIn(marker, english)
+            self.assertIn(marker, chinese)
+        self.assertIn("Terra has no AIR role", english)
+        self.assertIn("Terra 不参与 AIR", chinese)
 
-    def test_role_tables_publish_exact_models_efforts_and_tiers(self) -> None:
-        for path in READMES:
+    def test_role_tables_publish_exact_models_efforts_and_requested_tiers(self) -> None:
+        for path in PUBLIC_READMES:
             text = read(path)
-            self.assertRegex(text, r"air-controller.*Sol\s*/\s*xhigh\s*/\s*Standard")
-            self.assertRegex(text, r"air-critical-controller.*Sol\s*/\s*xhigh\s*/\s*Standard")
-            self.assertRegex(text, r"air-efficient-worker.*Luna\s*/\s*max\s*/\s*Fast")
-            self.assertRegex(text, r"air-complex-worker.*Luna\s*/\s*max\s*/\s*Fast")
-            self.assertRegex(text, r"air-challenger.*Sol\s*/\s*xhigh\s*/\s*Standard")
+            self.assertRegex(text, r"air-controller.*Sol / xhigh / Standard")
+            self.assertRegex(text, r"air-critical-controller.*Sol / xhigh / Standard")
+            self.assertRegex(text, r"air-efficient-worker.*Luna / max / Fast")
+            self.assertRegex(text, r"air-complex-worker.*Luna / max / Fast")
+            self.assertRegex(text, r"air-challenger.*Sol / xhigh / Standard")
+            self.assertIn("unobserved", text)
 
-    def test_projection_uses_luna_fast_not_standard_weight(self) -> None:
-        expected = ("0.125", "62.0%", "67.0%", "49.3%", "56.3%", "37.5%", "44.5%")
-        for path in READMES:
+    def test_stable_install_is_tag_pinned_and_cross_platform(self) -> None:
+        for path in PUBLIC_READMES:
+            text = read(path)
+            self.assertIn("--branch v1.2.0 --depth 1", text)
+            self.assertIn("releases/tag/v1.2.0", text)
+            for marker in (
+                "scripts/validate.sh",
+                "scripts/install.sh --check",
+                "scripts/doctor.sh --require-codex",
+                "scripts/validate.ps1",
+                "scripts/install.ps1 -Check",
+                "scripts/doctor.ps1 -RequireCodex",
+            ):
+                self.assertIn(marker, text, path.name)
+            self.assertRegex(text, r"(?i)development|开发")
+            self.assertIn("`main`", text)
+
+    def test_first_run_guidance_precedes_runtime_and_evidence(self) -> None:
+        english = read(CANONICAL)
+        chinese = read(CHINESE)
+        self.assertLess(english.index("## First task"), english.index("## Runtime contract"))
+        self.assertLess(english.index("## Runtime contract"), english.index("## Evidence"))
+        self.assertLess(chinese.index("## 第一个任务"), chinese.index("## 运行契约"))
+        self.assertLess(chinese.index("## 运行契约"), chinese.index("## 不使用营销缩写的证据台账"))
+
+    def test_evidence_ledger_separates_history_invalid_diagnostic_and_unrun_rerun(self) -> None:
+        for path in PUBLIC_READMES:
+            text = read(path)
+            for marker in (
+                "v1.0",
+                "0.8943",
+                "0.8932",
+                "919.34",
+                "358.83",
+                "3.17×",
+                "BUDGET_ABORTED / INVALID",
+                "66.85",
+                "39.7%",
+                "1.198",
+                "170",
+                "hardest-10",
+            ):
+                self.assertIn(marker, text, path.name)
+
+        english = read(CANONICAL)
+        chinese = read(CHINESE)
+        self.assertIn("NOT RUN", english)
+        self.assertIn("do **not** establish statistical non-inferiority", english)
+        self.assertIn("does not promise", " ".join(english.split()))
+        self.assertIn("未运行", chinese)
+        self.assertIn("不能建立统计非劣性", chinese)
+        self.assertIn("不承诺", chinese)
+
+    def test_readmes_link_to_adopter_guides_and_evidence(self) -> None:
+        expected = (
+            "docs/getting-started",
+            "docs/troubleshooting",
+            "docs/examples/first-air-task",
+            "docs/evidence/README",
+            "tests/deepswe-v11-hardest10-results.md",
+            "tests/deepswe-v11-microbench.md",
+            "CONTRIBUTING.md",
+            "SUPPORT.md",
+            "SECURITY.md",
+            "NOTICE",
+            "CHANGELOG.md",
+        )
+        for path in PUBLIC_READMES:
             text = read(path)
             for marker in expected:
                 self.assertIn(marker, text, path.name)
-            self.assertIn("scenario_model_projection", text)
 
-    def test_projection_math_is_reproducible(self) -> None:
-        scenarios = (
-            (0.20, 0.80, 0.03, 0.08, 0.62, 0.67),
-            (0.30, 0.70, 0.05, 0.12, 0.4925, 0.5625),
-            (0.40, 0.60, 0.08, 0.15, 0.375, 0.445),
+    def test_root_readmes_do_not_publish_projection_tables_as_results(self) -> None:
+        forbidden = (
+            "scenario_model_projection",
+            "62.0%",
+            "67.0%",
+            "49.3%",
+            "56.3%",
+            "37.5%",
+            "44.5%",
+            "≤55%",
+            "$4.00 | $0.40 | $20.00",
         )
-        for sol, luna, low, high, saving_low, saving_high in scenarios:
-            self.assertAlmostEqual(saving_low, 1 - (sol + luna * 0.125 + high))
-            self.assertAlmostEqual(saving_high, 1 - (sol + luna * 0.125 + low))
-
-    def test_rate_tables_publish_sol_and_luna_fast(self) -> None:
-        for path in READMES:
+        for path in PUBLIC_READMES:
             text = read(path)
-            for row in (
-                "$4.00 | $0.40 | $20.00",
-                "$0.20 | $0.02 | $1.20",
-                "$0.40 | $0.04 | $2.40",
-                "100 | 10 | 500",
-                "5 | 0.5 | 30",
-                "12.5 | 1.25 | 75",
-            ):
-                self.assertIn(row, text, path.name)
+            for marker in forbidden:
+                self.assertNotIn(marker, text, path.name)
 
-    def test_readmes_separate_historical_measurement_from_v11_projection(self) -> None:
-        for path in READMES:
-            text = read(path)
-            self.assertIn("0.8943", text)
-            self.assertIn("0.8932", text)
-            self.assertIn("919.34", text)
-            self.assertIn("358.83", text)
-            self.assertIn("3.17", text)
-            self.assertRegex(text, r"(?i)historical|历史")
-            self.assertRegex(text, r"(?i)not yet|尚未")
-            self.assertRegex(text, r"(?i)not.*guarantee|不是.*保证")
-
-    def test_api_dollars_and_credits_are_distinguished(self) -> None:
-        for path in READMES:
-            text = read(path)
-            self.assertRegex(text, r"(?i)API.*(?:dollar|美元).*(?:credits|计费单位)")
-            self.assertIn("actual", text if path.name.endswith(".en.md") else text.replace("真实", "actual"))
-
-    def test_release_and_current_status_are_v1_1_2(self) -> None:
-        for path in READMES:
-            text = read(path)
-            self.assertIn("v1.1.2", text)
-            self.assertIn("releases/tag/v1.1.2", text)
-
-    def test_quickstarts_cover_posix_and_windows(self) -> None:
-        for path in READMES:
-            text = read(path)
-            for marker in ("scripts/validate.sh", "scripts/install.sh", "scripts/doctor.sh", "scripts/validate.ps1", "scripts/install.ps1"):
-                self.assertIn(marker, text)
-
-    def test_first_run_guidance_precedes_architecture_and_benchmark(self) -> None:
-        zh, en = (read(path) for path in READMES)
-        self.assertLess(zh.index("## 适合你吗"), zh.index("## 为什么是这个架构"))
-        self.assertLess(zh.index("## 60 秒开始"), zh.index("## 为什么是这个架构"))
-        self.assertLess(en.index("## Is AIR for you?"), en.index("## Why this architecture"))
-        self.assertLess(en.index("## 60-second quickstart"), en.index("## Why this architecture"))
-        for text in (zh, en):
-            self.assertIn("docs/prompt-recipes.md", text)
-            self.assertIn("CHANGELOG.md", text)
-
-    def test_community_surface_has_no_stale_public_identity(self) -> None:
-        paths = (
-            ROOT / "CONTRIBUTING.md",
-            ROOT / "SUPPORT.md",
-            ROOT / "SECURITY.md",
-            ROOT / ".github" / "ISSUE_TEMPLATE" / "bug_report.yml",
-            ROOT / ".github" / "ISSUE_TEMPLATE" / "feature_request.yml",
-        )
-        for path in paths:
-            text = read(path)
-            self.assertNotIn("Codex Codex AIR", text, path.name)
-            self.assertNotIn("v0.4.1", text, path.name)
-        self.assertIn("1.1.x", read(ROOT / "SECURITY.md"))
-        self.assertIn("discussions", read(ROOT / "SUPPORT.md").lower())
-
-    def test_documentation_limitations_and_license_exist(self) -> None:
-        for path in READMES:
-            text = read(path)
-            for marker in ("docs/release/runtime-surface-matrix.md", "CONTRIBUTING.md", "SECURITY.md", "Apache License 2.0"):
-                self.assertIn(marker, text)
-            self.assertRegex(text, r"(?m)^## (?:限制|Limitations)$")
+    def test_compatibility_redirect_contains_no_parallel_contract_or_evidence_table(self) -> None:
+        compatibility = read(COMPATIBILITY)
+        for marker in ("Runtime contract", "BUDGET_ABORTED", "66.85", "air-controller", "scenario_model_projection"):
+            self.assertNotIn(marker, compatibility)
 
     def test_all_relative_markdown_links_resolve(self) -> None:
         link_pattern = re.compile(r"\]\((<[^>]+>|[^)\s]+)")
-        for path in READMES:
+        for path in (*PUBLIC_READMES, COMPATIBILITY):
             for match in link_pattern.finditer(read(path)):
                 target = match.group(1).strip("<>")
                 if target.startswith(("#", "http://", "https://", "mailto:")):

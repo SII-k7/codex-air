@@ -5,14 +5,22 @@ IFS=$'\n\t'
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd -P)
 
+usage() {
+  printf 'Usage: install.sh [--check] [--help]\n'
+  printf 'Install Codex AIR transactionally, or validate a prospective install with --check.\n'
+}
+
 check_mode=0
 if (( $# > 1 )); then
-  printf 'Usage: install.sh [--check]\n' >&2
+  usage >&2
   exit 1
 fi
 if (( $# == 1 )); then
-  [[ "$1" == --check ]] || { printf 'Usage: install.sh [--check]\n' >&2; exit 1; }
-  check_mode=1
+  case "$1" in
+    --check) check_mode=1 ;;
+    -h|--help) usage; exit 0 ;;
+    *) usage >&2; exit 1 ;;
+  esac
 fi
 
 die() {
@@ -147,6 +155,7 @@ critical_controller_source="$REPO_ROOT/.codex/agents/air-critical-controller.tom
 complex_source="$REPO_ROOT/.codex/agents/air-complex-worker.toml"
 efficient_source="$REPO_ROOT/.codex/agents/air-efficient-worker.toml"
 challenger_source="$REPO_ROOT/.codex/agents/air-challenger.toml"
+version_source="$REPO_ROOT/VERSION"
 
 for source_dir in "$canonical_skill_source" "$compat_skill_source"; do
   [[ -d "$source_dir" && ! -L "$source_dir" ]] || die 'a source skill directory is missing or unsafe'
@@ -156,6 +165,22 @@ for source_file in "$controller_source" "$critical_controller_source" "$complex_
   [[ -f "$source_file" && ! -L "$source_file" ]] || die 'a source agent file is missing or unsafe'
   assert_plain "$source_file" file
 done
+[[ -f "$version_source" && ! -L "$version_source" ]] || die 'the source VERSION file is missing or unsafe'
+release_version=$(<"$version_source")
+[[ "$release_version" =~ ^[0-9A-Za-z][0-9A-Za-z.+-]{0,63}$ ]] || die 'the source release version is invalid'
+source_commit=unknown
+source_dirty=unknown
+if command -v git >/dev/null 2>&1; then
+  commit_candidate=$(git -C "$REPO_ROOT" rev-parse --verify HEAD 2>/dev/null || true)
+  if [[ "$commit_candidate" =~ ^[0-9a-f]{40,64}$ ]]; then
+    source_commit=$commit_candidate
+    if [[ -n "$(git --no-optional-locks -C "$REPO_ROOT" status --porcelain --untracked-files=normal 2>/dev/null || true)" ]]; then
+      source_dirty=true
+    else
+      source_dirty=false
+    fi
+  fi
+fi
 
 if (( check_mode )); then
   bash "$SCRIPT_DIR/validate.sh" || die 'source validation failed'
@@ -444,6 +469,9 @@ done
 state_tmp=$(mktemp "$state_root/.install-state.XXXXXX") || die 'cannot create install state'
 {
   printf 'version=7\n'
+  printf 'release_version=%s\n' "$release_version"
+  printf 'source_commit=%s\n' "$source_commit"
+  printf 'source_dirty=%s\n' "$source_dirty"
   printf 'backup_id=%s\n' "$backup_id"
   printf 'skill_sha256=%s\n' "$skill_hash"
   printf 'compat_skill_sha256=%s\n' "$compat_hash"
